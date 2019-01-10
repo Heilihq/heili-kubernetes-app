@@ -1,0 +1,93 @@
+<div class="page-header">
+  <h1 ng-if="!ctrl.cluster.id">Add a new cluster</h1>
+  <h1 ng-if="ctrl.cluster.id">Configure {{ctrl.cluster.name}} cluster</h1>
+</div>
+
+<form name="clusterForm">
+  <div class="gf-form-group">
+    <div class="gf-form-inline">
+      <div class="gf-form max-width-30">
+        <span class="gf-form-label width-10">Name</span>
+        <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.name" placeholder="Cluster name" required=""
+        />
+      </div>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form max-width-30">
+        <span class="gf-form-label width-10">Data Center</span>
+        <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.dc" placeholder="Data Center" required=""
+      />
+      </div>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form max-width-30">
+        <span class="gf-form-label width-10">Environment</span>
+        <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.env" placeholder="Cluster environment" required=""
+      />
+      </div>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form max-width-30">
+        <span class="gf-form-label width-10">Heili Customer</span>
+        <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.customer" placeholder="Heili customer name" required=""
+      />
+      </div>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form max-width-30">
+        <span class="gf-form-label width-10">Heili Access Key</span>
+       <input type="text" class="gf-form-input input-xlarge" ng-model="ctrl.cluster.jsonData.accessKey" ng-if="!ctrl.cluster.jsonData.apiKeySet" required>
+       <input type="text" class="gf-form-input max-width-12" disabled="disabled" value="complete" ng-if="ctrl.cluster.jsonData.apiKeySet">
+      </div>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form max-width-30">
+        <span class="gf-form-label width-10">Heili Secret Key</span>
+        <input type="password" class="gf-form-input input-xlarge" ng-model="ctrl.cluster.jsonData.secretKey" ng-if="!ctrl.cluster.jsonData.apiKeySet" required>
+		<input type="text" class="gf-form-input max-width-12" disabled="disabled" value="complete" ng-if="ctrl.cluster.jsonData.apiKeySet">
+       </div>
+	   <div class="gf-form max-width-30">
+		<a class="btn btn-danger btn-small" href="#" ng-click="ctrl.reset()" ng-if="ctrl.cluster.jsonData.apiKeySet">reset</a>
+	   </div>
+    </div>
+  </div>
+  <datasource-http-settings current="ctrl.cluster" suggest-url="http://localhost:8001">
+  </datasource-http-settings>
+  <div class="row">
+    <div class="col-lg-8">
+      <h3 class="page-headering playlist-column-header">Data Source Settings</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <h4 class="page-heading">Heili Read</h4>
+      <div class="gf-form-group">
+        <div class="gf-form-inline">
+          <div class="gf-form">
+            <span class="gf-form-label width-10">Datasource</span>
+            <select class="gf-form-input" ng-model="ctrl.cluster.jsonData.ds" ng-options="f.name as f.name for f in ctrl.datasources"
+              required></select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="gf-form-group" ng-show="ctrl.isOrgEditor">
+  <button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
+  <a class="btn btn-link" ng-click="ctrl.cancel();">Cancel</a>
+</div>
+
+<span class="gf-form-label width-16">
+  <a ng-click="ctrl.toggleHelp()" bs-tooltip="'click to show instructions and download links'" data-placement="bottom">
+    <i class="fa fa-info-circle"></i> Manual Deploy Instructions
+  </a>
+</span>
+
+<div class="grafana-info-box span10" ng-if="ctrl.showHelp">
+  <h5>Manual Deploy</h5>
+  <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following files are needed.</p>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveKubeStateDeployToFile()">Download KubeState Deploy</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveTelegrafDSToFile()">Download Telegraf Daemon Set</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveTelegrafConfigToFile()">Download Telegraf ConfigMap</button>
+</div>

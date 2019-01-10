@@ -1,0 +1,37 @@
+{
+  "name": "Heili Kubernetes",
+  "id": "heili-kubernetes-datasource",
+  "type": "datasource",
+
+  "staticRoot": ".",
+
+  "partials": {
+    "config": "public/app/plugins/heili-kubernetes-app/datasource/partials/config.html"
+  },
+
+  "metrics": true,
+  "annotations": false,
+
+  "info": {
+    "description": "Heili Kubernetes datasource",
+    "author": {
+      "name": "Heili",
+      "url": "https://heilihq.com/"
+    },
+    "logos": {
+      "small": "../heili-kubernetes-app/img/logo.svg",
+      "large": "../heili-kubernetes-app/img/logo.svg"
+    },
+    "links": [
+      {"name": "GitHub", "url": "https://github.com/heilihq/heili-kubernetes-app"},
+      {"name": "License", "url": "https://github.com/heilihq/heili-kubernetes-app/blob/master/LICENSE"}
+    ],
+    "version": "1.0.0",
+    "updated": "2019-01-10"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "5.x.x",
+    "plugins": [ ]
+  }
+}
