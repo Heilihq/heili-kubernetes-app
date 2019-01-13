@@ -131,7 +131,7 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                     });
                 };
                 ClusterInfoCtrl.prototype.goToStatefulSetDashboard = function () {
-                    this.$location.path("dashboard/db/k8s-statefulesets")
+                    this.$location.path("dashboard/db/k8s-statefulset")
                         .search({
                         "var-datasource": this.cluster.jsonData.ds,
                         "var-cluster": this.cluster.name,

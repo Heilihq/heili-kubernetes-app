@@ -77,7 +77,7 @@ export class ClusterInfoCtrl {
   }
 
   goToStatefulSetDashboard() {
-    this.$location.path("dashboard/db/k8s-statefulesets")
+    this.$location.path("dashboard/db/k8s-statefulset")
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
