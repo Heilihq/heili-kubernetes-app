@@ -4,7 +4,7 @@ import _ from 'lodash';
 import appEvents from 'app/core/app_events';
 import angular from 'angular';
 
-const telegrafImage = 'docker.io/telegraf:1.9';
+const telegrafImage = 'telegraf:1.9';
 const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
 
 let kubestateDeployment = {
@@ -45,6 +45,55 @@ let kubestateDeployment = {
             "initialDelaySeconds": 5,
             "timeoutSeconds": 5
           }
+        },
+        {
+          "name": "telegraf",
+          "image": telegrafImage,
+          "args": [
+            "--input-filter",
+            "prometheus",
+            "--output-filter",
+            "amqp"
+          ],
+          "resources": {
+            "limits": {
+              "memory": "100Mi"
+            },
+            "requests": {
+              "cpu": "500m",
+              "memory": "50Mi"
+            }
+          },
+          "env": [
+            {
+              "name": "HOSTNAME",
+              "valueFrom": {
+                "fieldRef": {
+                  "fieldPath": "spec.nodeName"
+                }
+              }
+            },
+            {
+              "name": "HEILI_CUSTOMER",
+              "value": "raycatchltd"
+            },
+            {
+              "name": "HEILI_DC",
+              "value": "gcp"
+            },
+            {
+              "name": "HEILI_ENVIRONMENT",
+              "value": "production"
+            },
+            {
+              "name": "HEILI_ACCESS_KEY",
+              "value": "SEU3RkNGNjlENkRBODI="
+            },
+            {
+              "name": "HEILI_SECRET_KEY",
+              "value": "YzUzN2RkMjBiMTg5ZDkxZmQ2ZTJkYjU4YzBmNWMyNGU2NDUwODk4YzU1Njk0MTdj"
+            }
+          ]
         }]
       }
     }
@@ -109,6 +158,12 @@ let telegrafDaemonSet = {
         "containers": [{
           "name": "telegraf",
           "image": telegrafImage,
+          "args": [
+            "--input-filter",
+            "cpu:system:mem:disk:diskio:processes:net:docker:kubernetes",
+            "--output-filter",
+            "amqp"
+          ],
           "resources": {
             "limits": {
               "memory": "500Mi"
@@ -235,13 +290,14 @@ const telegrafConfigMap = {
         perdevice = true
         total = true
         docker_label_include = []
-        docker_label_exclude = []
+        docker_label_exclude = ["statefulset.*"]
         tag_env = []
       [[inputs.prometheus]]
         kubernetes_services = ["http://kube-state-metrics.kube-system:8080/metrics"]
         bearer_token = "/var/run/secrets/kubernetes.io/serviceaccount/token"
         insecure_skip_verify = true
         response_timeout = "30s"
+        namepass = ["kube_deployment_status_replicas", "kube_deployment_status_replicas_available", "kube_deployment_status_replicas_updated", "kube_deployment_status_replicas_unavailable", "kube_deployment_status_observed_generation", "kube_job_status_active", "kube_cronjob_status_active", "kube_job_status_failed", "kube_job_status_succeeded", "kube_statefulset_status_replicas", "kube_statefulset_status_replicas_current", "kube_statefulset_status_replicas_updated", "kube_statefulset_status_observed_generation"]
       [[inputs.kubernetes]]
         url = "http://1.1.1.1:10255"`
   }
