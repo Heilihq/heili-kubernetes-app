@@ -103,6 +103,12 @@ System.register(['lodash'], function(exports_1) {
                         return result.items;
                     });
                 };
+                K8sDatasource.prototype.getCronJobs = function (namespace) {
+                    return this._get('/apis/batch/v1beta1/' + addNamespace(namespace) + 'cronjobs')
+                        .then(function (result) {
+                        return result.items;
+                    });
+                };
                 K8sDatasource.prototype.getPods = function (namespace) {
                     return this._get('/api/v1/' + addNamespace(namespace) + 'pods')
                         .then(function (result) {

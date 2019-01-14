@@ -20,6 +20,7 @@ export declare class K8sDatasource {
     getReplicationControllers(namespace: any): any;
     getDeployments(namespace: any): any;
     getStaefulsets(namespace: any): any;
+    getCronJobs(namespace: any): any;
     getPods(namespace: any): any;
     getPodsByLabel(namespace: any, labels: any): any;
     getPod(name: any): any;

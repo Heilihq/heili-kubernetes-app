@@ -29,6 +29,7 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                     this.replicationControllers = [];
                     this.statefulSets = [];
                     this.deployments = [];
+                    this.cronJobs = [];
                     this.pods = [];
                     if (!("cluster" in $location.search())) {
                         alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
@@ -68,6 +69,9 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                     });
                     this.clusterDS.getDeployments(namespace).then(function (deployments) {
                         _this.deployments = deployments;
+                    });
+                    this.clusterDS.getCronJobs(namespace).then(function (cronjobs) {
+                        _this.cronJobs = cronjobs;
                     });
                     this.clusterDS.getPods(namespace).then(function (pods) {
                         _this.pods = pods;

@@ -108,6 +108,13 @@ export class K8sDatasource {
       });
   }
 
+  getCronJobs(namespace) {
+    return this._get('/apis/batch/v1beta1/' + addNamespace(namespace) + 'cronjobs')
+      .then(result => {
+        return result.items;
+      });
+  }
+
   getPods(namespace) {
     return this._get('/api/v1/' + addNamespace(namespace) + 'pods')
       .then(result => {

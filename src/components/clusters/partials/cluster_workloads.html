@@ -43,6 +43,35 @@
 	</ol>
 </section>
 
+<section class="card-section card-list-layout-list"  ng-show="ctrl.cronJobs.length > 0">
+	<h3 class="page-heading">
+		Cron Jobs
+	</h3>
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="cronjobs in ctrl.cronJobs">
+            <div class="card-item card-item--alert pointer">
+                <!-- <div class="card-item-header card-item-header-action">
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToDaemonSetsDashboard(daemonset, $event)">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'DaemonSets dashboard'"></i>
+						<span class="muted">DaemonSets Stats Dashboard</span>
+					</div>
+				</div> -->
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-name">
+							<span style="font-size: 80%">{{cronjobs.metadata.name}}</span>
+                            <span tag-color-from-name="cronjobs.spec.schedule"  class="label label-tag">
+								{{cronjobs.spec.schedule}}
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ol>
+</section>
+
 <section class="card-section card-list-layout-list" ng-show="ctrl.replicationControllers.length > 0">
 	<h3 class="page-heading">
 		Replication Controllers

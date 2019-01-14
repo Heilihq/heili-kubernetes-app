@@ -12,6 +12,7 @@ export class ClusterWorkloadsCtrl {
   replicationControllers: any[];
   statefulSets: any[];
   deployments: any[];
+  cronJobs: any[];
   pods: any[];
   clusterDS: any;
 
@@ -29,6 +30,7 @@ export class ClusterWorkloadsCtrl {
     this.replicationControllers = [];
     this.statefulSets = [];
     this.deployments = [];
+    this.cronJobs = [];
     this.pods = [];
 
     if (!("cluster" in $location.search())) {
@@ -68,9 +70,12 @@ export class ClusterWorkloadsCtrl {
     });
     this.clusterDS.getStaefulsets(namespace).then(statefulSets => {
       this.statefulSets = statefulSets;
-    })
+    });
     this.clusterDS.getDeployments(namespace).then(deployments => {
       this.deployments = deployments;
+    });
+    this.clusterDS.getCronJobs(namespace).then(cronjobs => {
+      this.cronJobs = cronjobs;
     });
     this.clusterDS.getPods(namespace).then(pods => {
       this.pods = pods;

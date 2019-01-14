@@ -13,6 +13,7 @@ export declare class ClusterWorkloadsCtrl {
     replicationControllers: any[];
     statefulSets: any[];
     deployments: any[];
+    cronJobs: any[];
     pods: any[];
     clusterDS: any;
     static templateUrl: string;
