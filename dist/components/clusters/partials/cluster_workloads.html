@@ -17,13 +17,20 @@
 	</div>
 </section>
 
-<section class="card-section card-list-layout-list">
+<section class="card-section card-list-layout-list"  ng-show="ctrl.daemonSets.length > 0">
 	<h3 class="page-heading">
 		Daemon Sets
 	</h3>
 	<ol class="card-list">
 		<li class="card-item-wrapper" ng-repeat="ds in ctrl.daemonSets">
-			<div class="card-item card-item--alert">
+            <div class="card-item card-item--alert pointer">
+                <!-- <div class="card-item-header card-item-header-action">
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToDaemonSetsDashboard(daemonset, $event)">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'DaemonSets dashboard'"></i>
+						<span class="muted">DaemonSets Stats Dashboard</span>
+					</div>
+				</div> -->
 				<div class="card-item-body">
 					<div class="card-item-details">
 						<div class="card-item-name">
@@ -55,6 +62,32 @@
 	</ol>
 </section>
 
+<section class="card-section card-list-layout-list" ng-show="ctrl.statefulSets.length > 0">
+	<h3 class="page-heading">
+		Stateful Sets
+	</h3>
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="ss in ctrl.statefulSets">
+            <div class="card-item card-item--alert pointer">
+                <div class="card-item-header card-item-header-action">
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToStatefulSetsDashboard(stetefulset, $event)">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'StatefulSets dashboard'"></i>
+						<span class="muted">Stateful Sets Stats Dashboard</span>
+					</div>
+				</div>
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-name">
+							<span style="font-size: 80%">{{ss.metadata.name}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ol>
+</section>
+
 <section class="card-section card-list-layout-list" ng-show="ctrl.deployments.length > 0">
 	<h3 class="page-heading">
 		Deployments
@@ -62,7 +95,7 @@
 	<ol class="card-list">
 		<li class="card-item-wrapper" ng-repeat="deploy in ctrl.deployments">
 			<div class="card-item card-item--alert pointer">
-        <div class="card-item-header card-item-header-action">
+                <div class="card-item-header card-item-header-action">
 					<div style="display:inline-block;"
 						ng-click="ctrl.goToDeploymentDashboard(deploy, $event)">
 						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Deployments dashboard'"></i>

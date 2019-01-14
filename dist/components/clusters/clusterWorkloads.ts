@@ -10,6 +10,7 @@ export class ClusterWorkloadsCtrl {
   namespace: string;
   daemonSets: any[];
   replicationControllers: any[];
+  statefulSets: any[];
   deployments: any[];
   pods: any[];
   clusterDS: any;
@@ -26,6 +27,7 @@ export class ClusterWorkloadsCtrl {
     this.namespace = "";
     this.daemonSets = [];
     this.replicationControllers = [];
+    this.statefulSets = [];
     this.deployments = [];
     this.pods = [];
 
@@ -64,6 +66,9 @@ export class ClusterWorkloadsCtrl {
     this.clusterDS.getReplicationControllers(namespace).then(rc => {
       this.replicationControllers = rc;
     });
+    this.clusterDS.getStaefulsets(namespace).then(statefulSets => {
+      this.statefulSets = statefulSets;
+    })
     this.clusterDS.getDeployments(namespace).then(deployments => {
       this.deployments = deployments;
     });
@@ -104,6 +109,26 @@ export class ClusterWorkloadsCtrl {
       "var-cluster": this.cluster.name,
       "var-namespace": deploy.metadata.namespace,
       "var-deployment": deploy.metadata.name
+    });
+  }
+
+  // goToDaemonSetsDashboard(daemonset) {
+  //   this.$location.path("dashboard/db/k8s-daemonsets")
+  //   .search({
+  //     "var-datasource": this.cluster.jsonData.ds,
+  //     "var-cluster": this.cluster.name,
+  //     "var-namespace": daemonset.metadata.namespace,
+  //     "var-daemonset": daemonset.metadata.name
+  //   });
+  // }
+
+  goToStatefulSetsDashboard(statefulset) {
+    this.$location.path("dashboard/db/k8s-statefulset")
+    .search({
+      "var-datasource": this.cluster.jsonData.ds,
+      "var-cluster": this.cluster.name,
+      "var-namespace": statefulset.metadata.namespace,
+      "var-statefulset": statefulset.metadata.name
     });
   }
 

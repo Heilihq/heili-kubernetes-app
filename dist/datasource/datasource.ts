@@ -80,8 +80,9 @@ export class K8sDatasource {
   }
 
   getDaemonSets(namespace) {
-    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets')
+    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'daemonsets')
       .then(result => {
+        console.log(result);
         return result.items;
       });
   }
@@ -94,7 +95,14 @@ export class K8sDatasource {
   }
 
   getDeployments(namespace) {
-    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments')
+    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'deployments')
+      .then(result => {
+        return result.items;
+      });
+  }
+
+  getStaefulsets(namespace) {
+    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'statefulsets')
       .then(result => {
         return result.items;
       });
@@ -188,6 +196,21 @@ export class K8sDatasource {
             data.push({
               text: deployment.metadata.name,
               value: deployment.metadata.name,
+            });
+          }
+          return data
+        })
+      case 'statefulset':
+        for (let ns of namespaces) {
+          promises.push(this.getStaefulsets(ns))
+        }
+        return Promise.all(promises).then((res) => {
+          let data: any[] = [];
+          let statefulsets = _.flatten(res).filter(n => n)
+          for (let statefulset of statefulsets) {
+            data.push({
+              text: statefulset.metadata.name,
+              value: statefulset.metadata.name,
             });
           }
           return data

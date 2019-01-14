@@ -27,6 +27,7 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                     this.namespace = "";
                     this.daemonSets = [];
                     this.replicationControllers = [];
+                    this.statefulSets = [];
                     this.deployments = [];
                     this.pods = [];
                     if (!("cluster" in $location.search())) {
@@ -61,6 +62,9 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                     });
                     this.clusterDS.getReplicationControllers(namespace).then(function (rc) {
                         _this.replicationControllers = rc;
+                    });
+                    this.clusterDS.getStaefulsets(namespace).then(function (statefulSets) {
+                        _this.statefulSets = statefulSets;
                     });
                     this.clusterDS.getDeployments(namespace).then(function (deployments) {
                         _this.deployments = deployments;
@@ -98,6 +102,24 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         "var-cluster": this.cluster.name,
                         "var-namespace": deploy.metadata.namespace,
                         "var-deployment": deploy.metadata.name
+                    });
+                };
+                // goToDaemonSetsDashboard(daemonset) {
+                //   this.$location.path("dashboard/db/k8s-daemonsets")
+                //   .search({
+                //     "var-datasource": this.cluster.jsonData.ds,
+                //     "var-cluster": this.cluster.name,
+                //     "var-namespace": daemonset.metadata.namespace,
+                //     "var-daemonset": daemonset.metadata.name
+                //   });
+                // }
+                ClusterWorkloadsCtrl.prototype.goToStatefulSetsDashboard = function (statefulset) {
+                    this.$location.path("dashboard/db/k8s-statefulset")
+                        .search({
+                        "var-datasource": this.cluster.jsonData.ds,
+                        "var-cluster": this.cluster.name,
+                        "var-namespace": statefulset.metadata.namespace,
+                        "var-statefulset": statefulset.metadata.name
                     });
                 };
                 ClusterWorkloadsCtrl.prototype.goToPodInfo = function (pod, evt) {

@@ -79,8 +79,9 @@ System.register(['lodash'], function(exports_1) {
                     });
                 };
                 K8sDatasource.prototype.getDaemonSets = function (namespace) {
-                    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets')
+                    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'daemonsets')
                         .then(function (result) {
+                        console.log(result);
                         return result.items;
                     });
                 };
@@ -91,7 +92,13 @@ System.register(['lodash'], function(exports_1) {
                     });
                 };
                 K8sDatasource.prototype.getDeployments = function (namespace) {
-                    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments')
+                    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'deployments')
+                        .then(function (result) {
+                        return result.items;
+                    });
+                };
+                K8sDatasource.prototype.getStaefulsets = function (namespace) {
+                    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'statefulsets')
                         .then(function (result) {
                         return result.items;
                     });
@@ -186,6 +193,23 @@ System.register(['lodash'], function(exports_1) {
                                     data.push({
                                         text: deployment.metadata.name,
                                         value: deployment.metadata.name,
+                                    });
+                                }
+                                return data;
+                            });
+                        case 'statefulset':
+                            for (var _b = 0; _b < namespaces.length; _b++) {
+                                var ns = namespaces[_b];
+                                promises.push(this.getStaefulsets(ns));
+                            }
+                            return Promise.all(promises).then(function (res) {
+                                var data = [];
+                                var statefulsets = lodash_1.default.flatten(res).filter(function (n) { return n; });
+                                for (var _i = 0; _i < statefulsets.length; _i++) {
+                                    var statefulset = statefulsets[_i];
+                                    data.push({
+                                        text: statefulset.metadata.name,
+                                        value: statefulset.metadata.name,
                                     });
                                 }
                                 return data;

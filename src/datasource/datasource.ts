@@ -101,6 +101,13 @@ export class K8sDatasource {
       });
   }
 
+  getStaefulsets(namespace) {
+    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'statefulsets')
+      .then(result => {
+        return result.items;
+      });
+  }
+
   getPods(namespace) {
     return this._get('/api/v1/' + addNamespace(namespace) + 'pods')
       .then(result => {
@@ -189,6 +196,21 @@ export class K8sDatasource {
             data.push({
               text: deployment.metadata.name,
               value: deployment.metadata.name,
+            });
+          }
+          return data
+        })
+      case 'statefulset':
+        for (let ns of namespaces) {
+          promises.push(this.getStaefulsets(ns))
+        }
+        return Promise.all(promises).then((res) => {
+          let data: any[] = [];
+          let statefulsets = _.flatten(res).filter(n => n)
+          for (let statefulset of statefulsets) {
+            data.push({
+              text: statefulset.metadata.name,
+              value: statefulset.metadata.name,
             });
           }
           return data

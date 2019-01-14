@@ -11,6 +11,7 @@ export declare class ClusterWorkloadsCtrl {
     namespace: string;
     daemonSets: any[];
     replicationControllers: any[];
+    statefulSets: any[];
     deployments: any[];
     pods: any[];
     clusterDS: any;
@@ -23,5 +24,6 @@ export declare class ClusterWorkloadsCtrl {
     isComponentHealthy(component: any): boolean;
     goToPodDashboard(pod: any): void;
     goToDeploymentDashboard(deploy: any): void;
+    goToStatefulSetsDashboard(statefulset: any): void;
     goToPodInfo(pod: any, evt: any): void;
 }

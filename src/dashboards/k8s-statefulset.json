@@ -137,7 +137,7 @@
                 "type": "sum"
               }
             ],
-            "query": "name: kube_statefulset_status_replicas && tags.namespace: $namespace && tags.host: $node",
+            "query": "name: kube_statefulset_status_replicas && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -239,7 +239,7 @@
                 "type": "sum"
               }
             ],
-            "query": "name: kube_statefulset_status_replicas_current && tags.namespace: $namespace && tags.host: $node",
+            "query": "name: kube_statefulset_status_replicas_current && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -341,7 +341,7 @@
                 "type": "sum"
               }
             ],
-            "query": "name: kube_statefulset_status_replicas_updated && tags.namespace: $namespace && tags.host: $node",
+            "query": "name: kube_statefulset_status_replicas_updated && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -448,7 +448,7 @@
               "type": "max"
             }
           ],
-          "query": "name: kube_statefulset_status_replicas && tags.namespace: $namespace && tags.host: $node",
+          "query": "name: kube_statefulset_status_replicas && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -585,7 +585,7 @@
                 "type": "max"
               }
             ],
-            "query": "name: kube_statefulset_status_observed_generation && tags.namespace: $namespace && tags.host: $node",
+            "query": "name: kube_statefulset_status_observed_generation && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -709,6 +709,25 @@
         "name": "namespace",
         "options": [],
         "query": "namespace",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": null,
+        "tags": [],
+        "tagsQuery": null,
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "datasource": "$cluster",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "statefulset",
+        "options": [],
+        "query": "statefulset $namespace",
         "refresh": 1,
         "regex": "",
         "sort": 0,
