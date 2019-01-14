@@ -80,8 +80,9 @@ export class K8sDatasource {
   }
 
   getDaemonSets(namespace) {
-    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets')
+    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'daemonsets')
       .then(result => {
+        console.log(result);
         return result.items;
       });
   }
@@ -94,7 +95,7 @@ export class K8sDatasource {
   }
 
   getDeployments(namespace) {
-    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments')
+    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'deployments')
       .then(result => {
         return result.items;
       });
