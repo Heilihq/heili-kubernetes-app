@@ -10,4 +10,4 @@ The app allows you to monitor your Kubernetes cluster's performance. It includes
 
 1. Currently only has support for [**telegraf**](https://github.com/Influxdb/telegraf/) with **[ElasticSearch](https://elastic.co) Datasource**
 2. For automatic deployment of the daemonsets, then Kubernetes 1.6 or higher is required.
-3. Grafana 5.0.0+
+3. Grafana(https://github.com/grafana/grafana) 5.0.0+
