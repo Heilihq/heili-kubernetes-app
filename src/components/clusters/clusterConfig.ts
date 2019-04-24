@@ -30,6 +30,13 @@ let kubestateDeployment = {
         }
       },
       "spec": {
+        "volumes": [{
+          "name": "config",
+            "configMap": {
+              "name": "heili-telegraf"
+            }
+          }
+        ],
         "containers": [{
           "name": "kube-state-metrics",
           "image": kubestateImage,
@@ -72,28 +79,12 @@ let kubestateDeployment = {
                   "fieldPath": "spec.nodeName"
                 }
               }
-            },
-            {
-              "name": "HEILI_CUSTOMER",
-              "value": "raycatchltd"
-            },
-            {
-              "name": "HEILI_DC",
-              "value": "gcp"
-            },
-            {
-              "name": "HEILI_ENVIRONMENT",
-              "value": "production"
-            },
-            {
-              "name": "HEILI_ACCESS_KEY",
-              "value": "SEU3RkNGNjlENkRBODI="
-            },
-            {
-              "name": "HEILI_SECRET_KEY",
-              "value": "YzUzN2RkMjBiMTg5ZDkxZmQ2ZTJkYjU4YzBmNWMyNGU2NDUwODk4YzU1Njk0MTdj"
             }
-          ]
+          ],
+          "volumeMounts": [{
+              "name": "config",
+              "mountPath": "/etc/telegraf"
+            }
         }]
       }
     }
