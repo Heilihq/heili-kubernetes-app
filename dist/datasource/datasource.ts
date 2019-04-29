@@ -82,9 +82,19 @@ export class K8sDatasource {
   getDaemonSets(namespace) {
     return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'daemonsets')
       .then(result => {
-        console.log(result);
         return result.items;
       });
+  }
+
+  getDaemonSet(name, namespace) {
+    return this._get('/apis/apps/v1/daemonsets/?fieldSelector=metadata.name%3D' + name + ',metadata.namespace%3D' + namespace)
+    .then(result => {
+      if (result.items && result.items.length === 1) {
+        return result.items[0];
+      } else {
+        return result.items;
+      }
+    });
   }
 
   getReplicationControllers(namespace) {
@@ -101,8 +111,37 @@ export class K8sDatasource {
       });
   }
 
+  getDeployment(name, namespace) {
+    return this._get('/apis/apps/v1/deployments/?fieldSelector=metadata.name%3D' + name + ',metadata.namespace%3D' + namespace)
+    .then(result => {
+      if (result.items && result.items.length === 1) {
+        return result.items[0];
+      } else {
+        return result.items;
+      }
+    });
+  }
+
   getStaefulsets(namespace) {
     return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'statefulsets')
+      .then(result => {
+        return result.items;
+      });
+  }
+
+  getStatefulSet(name, namespace) {
+    return this._get('/apis/apps/v1/statefulsets/?fieldSelector=metadata.name%3D' + name + ',metadata.namespace%3D' + namespace)
+    .then(result => {
+      if (result.items && result.items.length === 1) {
+        return result.items[0];
+      } else {
+        return result.items;
+      }
+    });
+  }
+
+  getCronJobs(namespace) {
+    return this._get('/apis/batch/v1beta1/' + addNamespace(namespace) + 'cronjobs')
       .then(result => {
         return result.items;
       });
@@ -211,6 +250,21 @@ export class K8sDatasource {
             data.push({
               text: statefulset.metadata.name,
               value: statefulset.metadata.name,
+            });
+          }
+          return data
+        })
+      case 'daemonset':
+        for (let ns of namespaces) {
+          promises.push(this.getDaemonSets(ns))
+        }
+        return Promise.all(promises).then((res) => {
+          let data: any[] = [];
+          let daemonsets = _.flatten(res).filter(n => n)
+          for (let daemonset of daemonsets) {
+            data.push({
+              text: daemonset.metadata.name,
+              value: daemonset.metadata.name,
             });
           }
           return data

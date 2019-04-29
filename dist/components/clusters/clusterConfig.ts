@@ -4,20 +4,19 @@ import _ from 'lodash';
 import appEvents from 'app/core/app_events';
 import angular from 'angular';
 
-const telegrafImage = 'docker.io/telegraf:1.9';
-const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
+const telegrafImage = 'telegraf:1.10';
 
-let kubestateDeployment = {
+let telegrafDeployment = {
   "apiVersion": "apps/v1beta1",
   "kind": "Deployment",
   "metadata": {
-    "name": "kube-state-metrics",
-    "namespace": "kube-system"
+    "name": "telegraf",
+    "namespace": "heili"
   },
   "spec": {
     "selector": {
       "matchLabels": {
-        "k8s-app": "kube-state-metrics",
+        "k8s-app": "telegraf",
         "heilik8sapp": "true"
       }
     },
@@ -25,26 +24,74 @@ let kubestateDeployment = {
     "template": {
       "metadata": {
         "labels": {
-          "k8s-app": "kube-state-metrics",
+          "k8s-app": "telegraf",
           "heilik8sapp": "true"
         }
       },
       "spec": {
-        "containers": [{
-          "name": "kube-state-metrics",
-          "image": kubestateImage,
-          "ports": [{
-            "name": "http-metrics",
-            "containerPort": 8080
-          }],
-          "readinessProbe": {
-            "httpGet": {
-              "path": "/healthz",
-              "port": 8080
-            },
-            "initialDelaySeconds": 5,
-            "timeoutSeconds": 5
+        "volumes": [{
+          "name": "config",
+            "configMap": {
+              "name": "heili-telegraf"
+            }
           }
+        ],
+        "containers": [
+        {
+          "name": "telegraf",
+          "image": telegrafImage,
+          "args": [
+            "--input-filter",
+            "kube_inventory",
+            "--output-filter",
+            "amqp"
+          ],
+          "resources": {
+            "limits": {
+              "memory": "100Mi",
+              "cpu": "200m",
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "50Mi"
+            }
+          },
+          "env": [
+            {
+              "name": "HEILI_COLLECTOR",
+              "value": "kube_inventory"
+            },
+            {
+              "name": "HOSTNAME",
+              "valueFrom": {
+                "fieldRef": {
+                  "fieldPath": "spec.nodeName"
+                }
+              }
+            },
+            {
+              "name": "HEILI_ACCESS_KEY",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "heili-telegraf",
+                  "key": "heili.access_key"
+                }
+              }
+            },
+            {
+              "name": "HEILI_SECRET_KEY",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "heili-telegraf",
+                  "key": "heili.secret_key"
+                }
+              }
+            }
+          ],
+          "volumeMounts": [{
+              "name": "config",
+              "mountPath": "/etc/telegraf"
+          }]
         }]
       }
     }
@@ -56,7 +103,7 @@ let telegrafDaemonSet = {
   "apiVersion": "apps/v1",
   "metadata": {
     "name": "telegraf",
-    "namespace": "kube-system"
+    "namespace": "heili"
   },
   "spec": {
     "selector": {
@@ -109,13 +156,20 @@ let telegrafDaemonSet = {
         "containers": [{
           "name": "telegraf",
           "image": telegrafImage,
+          "args": [
+            "--input-filter",
+            "cpu:system:mem:disk:diskio:processes:net:docker:kubernetes",
+            "--output-filter",
+            "amqp"
+          ],
           "resources": {
             "limits": {
-              "memory": "500Mi"
+              "memory": "200Mi",
+              "cpu": "500m",
             },
             "requests": {
-              "cpu": "500m",
-              "memory": "500Mi"
+              "cpu": "200m",
+              "memory": "100Mi"
             }
           },
           "env": [{
@@ -133,6 +187,24 @@ let telegrafDaemonSet = {
             {
               "name": "HOST_SYS",
               "value": "/rootfs/sys"
+            },
+            {
+              "name": "HEILI_ACCESS_KEY",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "heili-telegraf",
+                  "key": "heili.access_key"
+                }
+              }
+            },
+            {
+              "name": "HEILI_SECRET_KEY",
+              "valueFrom": {
+                "secretKeyRef": {
+                  "name": "heili-telegraf",
+                  "key": "heili.secret_key"
+                }
+              }
             }
           ],
           "volumeMounts": [{
@@ -175,75 +247,146 @@ let telegrafDaemonSet = {
     }
   }
 };
+const telegrafRBAC = [
+{
+  "apiVersion": "rbac.authorization.k8s.io/v1",
+  "kind": "ClusterRole",
+  "metadata": {
+    "name": "heili:cluster:viewer",
+    "labels": {
+      "rbac.authorization.k8s.io/aggregate-view-telegraf": "true"
+    }
+  },
+  "rules": [
+    {"apiGroups": [""]},
+    {"resources": ["persistentvolumes", "nodes"]},
+    {"verbs": ["get","list"]}
+  ]
+},
+{
+  "apiVersion": "rbac.authorization.k8s.io/v1",
+  "kind": "ClusterRole",
+  "metadata": {
+    "name": "heili:telegraf"
+  },
+  "aggregationRule": {
+    "clusterRoleSelectors": [
+      {"matchLabels": {
+        "rbac.authorization.k8s.io/aggregate-view-telegraf": "true"
+      }},
+      {"matchLabels": {
+        "rbac.authorization.k8s.io/aggregate-to-view": "true"
+      }}
+    ]
+  },
+  "rules": []
+},
+{
+  "apiVersion": "v1",
+  "kind": "ServiceAccount",
+  "metadata": {
+    "name": "telegraf",
+    "namespace": "heili"
+  }
+},
+{
+  "apiVersion": "rbac.authorization.k8s.io/v1",
+  "kind": "ClusterRoleBinding",
+  "metadata": {
+    "name": "heili:telegraf:viewer"
+  },
+  "roleRef": {
+    "apiGroup": "rbac.authorization.k8s.io",
+    "kind": "ClusterRole",
+    "name": "heili:telegraf",
+  },
+  "subjects": {
+    "kind": "ServiceAccount",
+    "name": "telegraf",
+    "namespace": "heili"
+  }
+}]
+
+const telegrafSecret = {
+  "apiVersion": "v1",
+  "kind": "Secret",
+  "metadata": {
+    "name": "heili-telegraf",
+    "namespace": "heili"
+  },
+  "type": "Opaque",
+  "data": {}
+}
 
 const telegrafConfigMap = {
   "apiVersion": "v1",
   "kind": "ConfigMap",
   "metadata": {
-    "name": "heili-telegraf"
+    "name": "heili-telegraf",
+    "namespace": "heili"
   },
   "data": {
-    "telegraf.conf": `|
-      [global_tags]
-        customer = "$HEILI_CUSTOMER"
-        dc = "$HEILI_DC"
-        environment = "$HEILI_ENVIRONMENT"
-      [agent]
-        interval = "1m"
-        round_interval = false
-        metric_batch_size = 5000
-        metric_buffer_limit = 10000
-        collection_jitter = "5s"
-        flush_interval = "40s"
-        flush_jitter = "20s"
-        precision = ""
-        debug = false
-        quiet = true
-        logfile = ""
-        hostname = "$HOSTNAME"
-        omit_hostname = false
-      [[outputs.amqp]]
-        url = "amqp://$HEILI_ACCESS_KEY:$HEILI_SECRET_KEY@shipper.heilihq.com:5672/$HEILI_CUSTOMER"
-        exchange = "telegraf"
-        auth_method = "PLAIN"
-        routing_tag = "customer"
-        timeout = "10s"
-        data_format = "json"
-      [[inputs.cpu]]
-        percpu = false
-        totalcpu = true
-        collect_cpu_time = false
-        report_active = false
-      [[inputs.system]]
-        fieldpass = ["load1", "load5", "load15", "n_cpus"]
-      [[inputs.mem]]
-      [[inputs.disk]]
-      [inputs.disk.tagdrop]
-        fstype = ["tmpfs", "sysfs", "proc", "devtmpfs", "devfs", "mtmfs", "ramfs", "rootfs"]
-      [[inputs.diskio]]
-        devices = ["sda", "sdb"]
-      [[inputs.processes]]
-      [[inputs.net]]
-        interfaces = ["eth*"]
-        ignore_protocol_stats = true
-      [[inputs.docker]]
-        endpoint = "unix:///var/run/docker.sock"
-        container_names = []
-        container_name_include = []
-        container_name_exclude = []
-        timeout = "5s"
-        perdevice = true
-        total = true
-        docker_label_include = []
-        docker_label_exclude = []
-        tag_env = []
-      [[inputs.prometheus]]
-        kubernetes_services = ["http://kube-state-metrics.kube-system:8080/metrics"]
-        bearer_token = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-        insecure_skip_verify = true
-        response_timeout = "30s"
-      [[inputs.kubernetes]]
-        url = "http://1.1.1.1:10255"`
+    "telegraf.conf": "[global_tags] \
+    \n    customer = \"$HEILI_CUSTOMER\" \
+    \n    dc = \"$HEILI_DC\" \
+    \n    environment = \"$HEILI_ENVIRONMENT\" \
+    \n  [agent] \
+    \n    interval = \"1m\" \
+    \n    round_interval = false \
+    \n    metric_batch_size = 5000 \
+    \n    metric_buffer_limit = 10000 \
+    \n    collection_jitter = \"5s\" \
+    \n    flush_interval = \"40s\" \
+    \n    flush_jitter = \"20s\" \
+    \n    precision = \"\" \
+    \n    debug = false \
+    \n    quiet = true \
+    \n    logfile = \"\" \
+    \n    hostname = \"$HOSTNAME\" \
+    \n    omit_hostname = false \
+    \n  [[outputs.amqp]] \
+    \n    url = \"amqp://$HEILI_ACCESS_KEY:$HEILI_SECRET_KEY@shipper.heilihq.com:5672/$HEILI_CUSTOMER\" \
+    \n    exchange = \"telegraf\" \
+    \n    auth_method = \"PLAIN\" \
+    \n    routing_tag = \"customer\" \
+    \n    timeout = \"10s\" \
+    \n    data_format = \"json\" \
+    \n  [[inputs.cpu]] \
+    \n    percpu = false \
+    \n    totalcpu = true \
+    \n    collect_cpu_time = false \
+    \n    report_active = false \
+    \n  [[inputs.system]] \
+    \n    fieldpass = [\"load1\", \"load5\", \"load15\", \"n_cpus\"] \
+    \n  [[inputs.mem]] \
+    \n  [[inputs.disk]] \
+    \n  [inputs.disk.tagdrop] \
+    \n    fstype = [\"tmpfs\", \"sysfs\", \"proc\", \"devtmpfs\", \"devfs\", \"mtmfs\", \"ramfs\", \"rootfs\"] \
+    \n  [[inputs.diskio]] \
+    \n    devices = [\"sda\", \"sdb\"] \
+    \n  [[inputs.processes]] \
+    \n  [[inputs.net]] \
+    \n    interfaces = [\"eth*\"] \
+    \n    ignore_protocol_stats = true \
+    \n  [[inputs.docker]] \
+    \n    endpoint = \"unix:///var/run/docker.sock\" \
+    \n    container_names = [] \
+    \n    container_name_include = [] \
+    \n    container_name_exclude = [] \
+    \n    timeout = \"5s\" \
+    \n    perdevice = true \
+    \n    total = true \
+    \n    docker_label_include = [] \
+    \n    docker_label_exclude = [\"statefulset.*\"] \
+    \n    tag_env = [] \
+    \n  [[inputs.kube_inventory]] \
+    \n    url = \"https://kubernetes.default.svc\" \
+    \n    namespace = \"\" \
+    \n    bearer_token = \"/var/run/secrets/kubernetes.io/serviceaccount/token\" \
+    \n    response_timeout = \"5s\" \
+    \n    tls_ca = \"/var/run/secrets/kubernetes.io/serviceaccount/ca.crt\" \
+    \n  [[inputs.kubernetes]] \
+    \n    url = \"http://1.1.1.1:10255\""
   }
 };
 
@@ -364,14 +507,27 @@ export class ClusterConfigCtrl {
 
   saveTelegrafConfigToFile() {
     let blob = new Blob([angular.toJson(telegrafConfigMap, true)], {
-      type: "application/yaml"
+      type: "application/json"
     });
-    this.saveToFile('heilik8s-telegraf-cm.yml', blob);
+    console.log(angular.toJson(telegrafConfigMap, true));
+    console.log(angular.toJson(telegrafConfigMap, 4));
+    console.log(blob);
+    this.saveToFile('heilik8s-telegraf-configmap.yml', blob);
+  }
+
+  saveTelegrafSecretToFile() {
+    let modifiedtelegrafSecret = telegrafSecret;
+    modifiedtelegrafSecret.data["heili.access_key"] = btoa(this.cluster.jsonData.accessKey);
+    modifiedtelegrafSecret.data["heili.secret_key"] = btoa(this.cluster.jsonData.secretKey);
+
+    let blob = new Blob([angular.toJson(modifiedtelegrafSecret, true)], {
+      type: "application/json"
+    });
+    this.saveToFile('heilik8s-telegraf-secret.json', blob);
   }
 
   saveTelegrafDSToFile() {
     let modifiedtelegrafDaemonSet = telegrafDaemonSet;
-    console.log(this.cluster);
     modifiedtelegrafDaemonSet.spec.template.spec.containers[0].env.push({
       "name": "HEILI_CUSTOMER",
       "value": this.cluster.jsonData.customer
@@ -383,27 +539,33 @@ export class ClusterConfigCtrl {
     {
       "name": "HEILI_ENVIRONMENT",
       "value": this.cluster.jsonData.env
-    },
-    {
-      "name": "HEILI_ACCESS_KEY",
-      "value": this.cluster.jsonData.accessKey
-    },
-    {
-      "name": "HEILI_SECRET_KEY",
-      "value": this.cluster.jsonData.secretKey
     });
 
     let blob = new Blob([angular.toJson(modifiedtelegrafDaemonSet, true)], {
       type: "application/json"
     });
-    this.saveToFile('heilik8s-telegraf-ds.json', blob);
+    this.saveToFile('heilik8s-telegraf-daemonset.json', blob);
   }
 
-  saveKubeStateDeployToFile() {
-    let blob = new Blob([angular.toJson(kubestateDeployment, true)], {
+  saveTelegrafDeployToFile() {
+    let modifiedtelegrafDeployment = telegrafDeployment;
+    modifiedtelegrafDeployment.spec.template.spec.containers[0].env.push({
+      "name": "HEILI_CUSTOMER",
+      "value": this.cluster.jsonData.customer
+    },
+    {
+      "name": "HEILI_DC",
+      "value": this.cluster.jsonData.dc
+    },
+    {
+      "name": "HEILI_ENVIRONMENT",
+      "value": this.cluster.jsonData.env
+    });
+
+    let blob = new Blob([angular.toJson(modifiedtelegrafDeployment, true)], {
       type: "application/json"
     });
-    this.saveToFile('heilik8s-kubestate-deploy.json', blob);
+    this.saveToFile('heilik8s-telegraf-deployment.json', blob);
   }
 
   saveToFile(filename, blob) {

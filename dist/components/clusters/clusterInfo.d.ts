@@ -20,7 +20,7 @@ export declare class ClusterInfoCtrl {
     getClusterInfo(): void;
     goToDeploymentDashboard(): void;
     goToStatefulSetDashboard(): void;
-    goToJobsDashboard(): void;
+    goToDaemonSetsDashboard(): void;
     goToPodDashboard(): void;
     goToNodeDashboard(node: any, evt: any): void;
     goToWorkloads(ns: any, evt: any): void;

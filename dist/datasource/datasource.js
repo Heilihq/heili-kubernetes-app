@@ -81,8 +81,18 @@ System.register(['lodash'], function(exports_1) {
                 K8sDatasource.prototype.getDaemonSets = function (namespace) {
                     return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'daemonsets')
                         .then(function (result) {
-                        console.log(result);
                         return result.items;
+                    });
+                };
+                K8sDatasource.prototype.getDaemonSet = function (name, namespace) {
+                    return this._get('/apis/apps/v1/daemonsets/?fieldSelector=metadata.name%3D' + name + ',metadata.namespace%3D' + namespace)
+                        .then(function (result) {
+                        if (result.items && result.items.length === 1) {
+                            return result.items[0];
+                        }
+                        else {
+                            return result.items;
+                        }
                     });
                 };
                 K8sDatasource.prototype.getReplicationControllers = function (namespace) {
@@ -97,8 +107,36 @@ System.register(['lodash'], function(exports_1) {
                         return result.items;
                     });
                 };
+                K8sDatasource.prototype.getDeployment = function (name, namespace) {
+                    return this._get('/apis/apps/v1/deployments/?fieldSelector=metadata.name%3D' + name + ',metadata.namespace%3D' + namespace)
+                        .then(function (result) {
+                        if (result.items && result.items.length === 1) {
+                            return result.items[0];
+                        }
+                        else {
+                            return result.items;
+                        }
+                    });
+                };
                 K8sDatasource.prototype.getStaefulsets = function (namespace) {
                     return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'statefulsets')
+                        .then(function (result) {
+                        return result.items;
+                    });
+                };
+                K8sDatasource.prototype.getStatefulSet = function (name, namespace) {
+                    return this._get('/apis/apps/v1/statefulsets/?fieldSelector=metadata.name%3D' + name + ',metadata.namespace%3D' + namespace)
+                        .then(function (result) {
+                        if (result.items && result.items.length === 1) {
+                            return result.items[0];
+                        }
+                        else {
+                            return result.items;
+                        }
+                    });
+                };
+                K8sDatasource.prototype.getCronJobs = function (namespace) {
+                    return this._get('/apis/batch/v1beta1/' + addNamespace(namespace) + 'cronjobs')
                         .then(function (result) {
                         return result.items;
                     });
@@ -210,6 +248,23 @@ System.register(['lodash'], function(exports_1) {
                                     data.push({
                                         text: statefulset.metadata.name,
                                         value: statefulset.metadata.name,
+                                    });
+                                }
+                                return data;
+                            });
+                        case 'daemonset':
+                            for (var _c = 0; _c < namespaces.length; _c++) {
+                                var ns = namespaces[_c];
+                                promises.push(this.getDaemonSets(ns));
+                            }
+                            return Promise.all(promises).then(function (res) {
+                                var data = [];
+                                var daemonsets = lodash_1.default.flatten(res).filter(function (n) { return n; });
+                                for (var _i = 0; _i < daemonsets.length; _i++) {
+                                    var daemonset = daemonsets[_i];
+                                    data.push({
+                                        text: daemonset.metadata.name,
+                                        value: daemonset.metadata.name,
                                     });
                                 }
                                 return data;

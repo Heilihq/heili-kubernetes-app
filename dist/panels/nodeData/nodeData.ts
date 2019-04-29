@@ -23,8 +23,7 @@ export class NodeDataCtrl extends PanelCtrl {
   static scrollable = true;
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private datasourceSrv,
-      private $location, private alertSrv, private timeSrv, private variableSrv) {
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $location, private alertSrv, private timeSrv, private variableSrv) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 

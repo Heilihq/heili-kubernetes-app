@@ -22,11 +22,12 @@ export class PodInfoCtrl {
       return;
     } else {
       this.cluster_id = $location.search().cluster;
-      let pod_name    = $location.search().pod;
+      let pod_name    = $location.search().workload;
 
       this.loadDatasource(this.cluster_id).then(() => {
         this.clusterDS.getPod(pod_name).then(pod => {
           this.pod = pod;
+          console.log(this.pod);
           this.pageReady = true;
         });
       });
@@ -46,7 +47,8 @@ export class PodInfoCtrl {
 
   conditionStatus(condition) {
     var status;
-    if (condition.type === "Ready") {
+    var types: any = ["PodScheduled", "Ready", "Initialized", "ContainersReady"];
+    if (types.includes(condition.type)) {
       status = condition.status === "True";
     } else {
       status = condition.status === "False";

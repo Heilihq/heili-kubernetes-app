@@ -5,6 +5,9 @@ import {ClusterInfoCtrl} from './components/clusters/clusterInfo';
 import {ClusterWorkloadsCtrl} from './components/clusters/clusterWorkloads';
 import {NodeInfoCtrl} from './components/clusters/nodeInfo';
 import {PodInfoCtrl} from './components/clusters/podInfo';
+import {StatefulSetInfoCtrl} from './components/clusters/statefulSetInfo';
+import {DeploymentInfoCtrl} from './components/clusters/deploymentInfo';
+import {DaemonSetInfoCtrl} from './components/clusters/daemonSetInfo';
 import {loadPluginCss} from 'app/plugins/sdk';
 
 loadPluginCss({
@@ -19,5 +22,8 @@ export {
   ClusterInfoCtrl,
   ClusterWorkloadsCtrl,
   NodeInfoCtrl,
-  PodInfoCtrl
+  PodInfoCtrl,
+  StatefulSetInfoCtrl,
+  DeploymentInfoCtrl,
+  DaemonSetInfoCtrl
 };
