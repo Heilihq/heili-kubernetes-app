@@ -65,20 +65,20 @@ export default class NodeStatsDatasource {
     let podsPerNode, cpuPerNode, memoryPerNode;
 
     const podQuery = {
-      expr: 'name: kube_pod_info',
-      field: 'tags.pod',
+      expr: 'name: kubernetes_pod_container',
+      field: 'tags.pod_name',
       type: 'cardinality',
-      legend: 'tags.node',
+      legend: 'tags.node_name',
     };
     const cpuQuery = {
-      expr: 'name: kube_pod_container_resource_requests && tags.resource: cpu',
-      field: 'fields.gauge',
+      expr: 'name: kubernetes_pod_container',
+      field: 'fields.resource_requests_cpu_units',
       type: 'avg',
       legend: 'tags.node',
     };
     const memoryQuery = {
-      expr: 'name: kube_pod_container_resource_requests && tags.resource: memory',
-      field: 'fields.gauge',
+      expr: 'name: kubernetes_pod_container',
+      field: 'fields.resource_requests_memory_bytes',
       type: 'avg',
       legend: 'tags.node',
     };

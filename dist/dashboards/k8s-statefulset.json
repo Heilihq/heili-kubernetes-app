@@ -33,12 +33,12 @@
       }
     ]
   },
-  "description": "StatefulSet overview for Kubernetes deploys.",
+  "description": "StatefulSet overview for Kubernetes.",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1515631831351,
+  "iteration": 1556133906317,
   "links": [
     {
       "asDropdown": true,
@@ -63,6 +63,7 @@
         "rgb(72, 223, 30)"
       ],
       "datasource": "$datasource",
+      "description": "The desired number of pods per StatefulSet. \n*[kubernetes_statefulset.replicas]*",
       "editable": true,
       "error": false,
       "format": "none",
@@ -75,8 +76,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 0,
+        "w": 4,
+        "x": 2,
         "y": 0
       },
       "id": 24,
@@ -130,20 +131,20 @@
             ],
             "metrics": [
               {
-                "field": "fields.gauge",
+                "field": "fields.replicas",
                 "id": "1",
                 "meta": {},
                 "settings": {},
                 "type": "sum"
               }
             ],
-            "query": "name: kube_statefulset_status_replicas && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
+            "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
         ],
       "thresholds": "",
-      "title": "StatefulSet Replicas - Desired",
+      "title": "Replicas Desired",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -165,6 +166,7 @@
         "rgba(50, 172, 45, 0.97)"
       ],
       "datasource": "$datasource",
+      "description": "The number of ready pods created by this StatefulSet.\n*[kubernetes_statefulset.replicas_ready]*",
       "editable": true,
       "error": false,
       "format": "none",
@@ -177,8 +179,111 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 8,
+        "w": 4,
+        "x": 6,
+        "y": 0
+      },
+      "id": 36,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": 1,
+                "trimEdges": 1
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "fields.replicas_ready",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "sum"
+            }
+          ],
+          "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "thresholds": "",
+      "title": "Replicas Ready",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "$datasource",
+      "description": "The number of pods created by the current version of the StatefulSet. \n*[kubernetes_statefulset.replicas_current]*",
+      "editable": true,
+      "error": false,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 10,
         "y": 0
       },
       "id": 33,
@@ -232,20 +337,20 @@
             ],
             "metrics": [
               {
-                "field": "fields.gauge",
+                "field": "fields.replicas_current",
                 "id": "1",
                 "meta": {},
                 "settings": {},
                 "type": "sum"
               }
             ],
-            "query": "name: kube_statefulset_status_replicas_current && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
+            "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
         ],
       "thresholds": "",
-      "title": "StatefulSet Replicas - Current",
+      "title": "Replicas Current",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -267,6 +372,7 @@
         "rgba(50, 172, 45, 0.97)"
       ],
       "datasource": "$datasource",
+      "description": "The total number of pods created by the StatefulSet.\n*[kubernetes_statefulset.spec_replicas]*",
       "editable": true,
       "error": false,
       "format": "none",
@@ -279,8 +385,111 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 16,
+        "w": 4,
+        "x": 14,
+        "y": 0
+      },
+      "id": 37,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "bucketAggs": [
+            {
+              "field": "@timestamp",
+              "id": "2",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": 1,
+                "trimEdges": 1
+              },
+              "type": "date_histogram"
+            }
+          ],
+          "metrics": [
+            {
+              "field": "fields.replicas_ready",
+              "id": "1",
+              "meta": {},
+              "settings": {},
+              "type": "sum"
+            }
+          ],
+          "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "thresholds": "",
+      "title": "Replicas Pods",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "$datasource",
+      "description": "The number of pods updated to the new version of this StatefulSet.\n*[kubernetes_statefulset.replicas_updated]*",
+      "editable": true,
+      "error": false,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 18,
         "y": 0
       },
       "id": 25,
@@ -334,20 +543,20 @@
             ],
             "metrics": [
               {
-                "field": "fields.gauge",
+                "field": "fields.replicas_updated",
                 "id": "1",
                 "meta": {},
                 "settings": {},
                 "type": "sum"
               }
             ],
-            "query": "name: kube_statefulset_status_replicas_updated && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
+            "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
         ],
       "thresholds": "",
-      "title": "StatefulSet Replicas - Up-to-date",
+      "title": "Replicas Updated",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -365,6 +574,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$datasource",
+      "description": "Ready StatefulSet replicas pod split.",
       "editable": true,
       "error": false,
       "fill": 1,
@@ -402,11 +612,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "{{tags.statefulset}}.{{tags.namespace}}",
+          "alias": "{{tags.statefulset_name}}.{{tags.namespace}}",
           "bucketAggs": [
             {
               "fake": true,
-              "field": "tags.statefulset",
+              "field": "tags.statefulset_name",
               "id": "4",
               "settings": {
                 "min_doc_count": 1,
@@ -441,14 +651,14 @@
           ],
           "metrics": [
             {
-              "field": "fields.gauge",
+              "field": "fields.replicas_ready",
               "id": "1",
               "meta": {},
               "settings": {},
               "type": "max"
             }
           ],
-          "query": "name: kube_statefulset_status_replicas && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
+          "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -502,9 +712,10 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$datasource",
+      "description": "StatefulSet replicas Generation timeline.",
       "editable": true,
       "error": false,
-      "fill": 1,
+      "fill": 0,
       "gridPos": {
         "h": 7,
         "w": 24,
@@ -526,7 +737,7 @@
         "values": true
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 3,
       "links": [],
       "nullPointMode": "connected",
       "percentage": false,
@@ -539,11 +750,11 @@
       "steppedLine": false,
       "targets": [
         {
-            "alias": "{{tags.statefulset}}.{{tags.namespace}}",
+            "alias": "{{tags.statefulset_name}}.{{tags.namespace}}",
             "bucketAggs": [
               {
                 "fake": true,
-                "field": "tags.statefulset",
+                "field": "tags.statefulset_name",
                 "id": "4",
                 "settings": {
                   "min_doc_count": 1,
@@ -578,14 +789,14 @@
             ],
             "metrics": [
               {
-                "field": "fields.gauge",
+                "field": "fields.generation",
                 "id": "1",
                 "meta": {},
                 "settings": {},
                 "type": "max"
               }
             ],
-            "query": "name: kube_statefulset_status_observed_generation && tags.namespace: $namespace && tags.host: $node && tags.statefulset: $statefulset",
+            "query": "name: kubernetes_statefulset && tags.namespace: $namespace && tags.statefulset_name: $statefulset",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -610,7 +821,8 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "decimals": 0,
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -632,8 +844,8 @@
       }
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 16,
+  "refresh": "1m",
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [
     "kubernetes",
@@ -679,25 +891,6 @@
         "refresh": 1,
         "regex": "/$ds/",
         "type": "datasource"
-      },
-      {
-        "allValue": null,
-        "datasource": "$cluster",
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "name": "node",
-        "options": [],
-        "query": "node",
-        "refresh": 1,
-        "regex": "",
-        "sort": 0,
-        "tagValuesQuery": null,
-        "tags": [],
-        "tagsQuery": null,
-        "type": "query",
-        "useTags": false
       },
       {
         "allValue": null,

@@ -30,8 +30,8 @@
       {"name": "Pod Details Page", "path": "img/pod-details-screenshot.png"},
       {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
-    "version": "1.0.0",
-    "updated": "2018-12-24"
+    "version": "1.1.0",
+    "updated": "2019-04-29"
   },
 
   "includes": [
@@ -41,6 +41,9 @@
     { "type": "page", "name": "Cluster Workloads", "component": "ClusterWorkloadsCtrl", "role": "Viewer", "addToNav": false},
     { "type": "page", "name": "Node Info", "component": "NodeInfoCtrl", "role": "Viewer", "addToNav": false},
     { "type": "page", "name": "Pod Info", "component": "PodInfoCtrl", "role": "Viewer", "addToNav": false},
+    { "type": "page", "name": "StatefulSet Info", "component": "StatefulSetInfoCtrl", "role": "Viewer", "addToNav": false},
+    { "type": "page", "name": "Deployment Info", "component": "DeploymentInfoCtrl", "role": "Viewer", "addToNav": false},
+    { "type": "page", "name": "DaemonSet Info", "component": "DaemonSetInfoCtrl", "role": "Viewer", "addToNav": false},
     {
       "type": "datasource",
       "name": "kubernetes DS"
@@ -71,8 +74,8 @@
     },
     {
       "type": "dashboard",
-      "name": "K8s Jobs",
-      "path": "dashboards/k8s-jobs.json",
+      "name": "K8s DaemonSet",
+      "path": "dashboards/k8s-daemonset.json",
       "addToNav": false
     },
     {

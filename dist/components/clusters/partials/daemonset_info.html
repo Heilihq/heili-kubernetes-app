@@ -1,0 +1,111 @@
+<div class="page-header">
+	<h1>{{ctrl.daemonset.metadata.name}}
+	</h1>
+	<!-- <div style="float: right; padding-top: 1em; font-style: italic;">
+		<h5>
+			<a ng-click="ctrl.goToDaemonSetDashboard(ctrl.daemonset)">
+				<i ng-class="icon" class="icon-gf icon-gf-dashboard"></i> DaemonSet Dashboard
+			</a>
+		</h5>
+	</div> -->
+</div>
+
+<div class="row">
+	<div class="col-md-6">
+		<h3 class="page-heading playlist-column-header">DaemonSet</h3>
+		<div class="gf-form">
+			<span class="muted">
+				Desired: {{ctrl.daemonset.status.desiredNumberScheduled}}
+			</span>
+		</div>
+		<div class="gf-form">
+			<span class="muted">
+				Generation: {{ctrl.daemonset.metadata.generation}}
+			</span>
+		</div>
+		<div class="gf-form">
+			<span class="muted">
+				Namespace: {{ctrl.daemonset.metadata.namespace}}
+			</span>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<h3 class="page-heading playlist-column-header">Status</h3>
+		<div class="gf-form">
+			<span class="muted">
+				Ready: {{ctrl.daemonset.status.numberReady}}
+			</span>
+		</div>
+		<div class="gf-form">
+			<span class="muted">
+				Observed Generation: {{ctrl.daemonset.status.observedGeneration}}
+			</span>
+		</div>
+		<div class="gf-form">
+			<span class="muted">
+				Start time: {{ctrl.formatTime(ctrl.daemonset.metadata.creationTimestamp)}}
+			</span>
+		</div>
+	</div>
+</div>
+<br>
+
+<div class="row">
+	<div class="col-md-6">
+		<h3 class="page-heading playlist-column-header">Conditions</h3>
+		<table class="grafana-options-table" style="font-size: 90%;">
+			<tr class="muted">
+				<th>Status</th>
+				<th>Type</th>
+			</tr>
+			<tr ng-repeat="condition in ctrl.daemonset.status.conditions" class="alert-state-pending">
+				<td>
+					<i class="icon-gf"
+						ng-class="{
+							'icon-gf-critical alert-state-critical': !ctrl.isConditionOk(condition),
+							'icon-gf-online alert-state-ok': ctrl.isConditionOk(condition)
+						}">
+					</i>
+					{{ctrl.conditionStatus(condition).text}}
+				</td>
+				<td>{{condition.type}}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-md-6">
+		<h3 class="page-heading playlist-column-header">Labels</h3>
+		<div class="gf-form" ng-repeat="(k, v) in ctrl.daemonset.metadata.labels">
+			<span class="label label-tag" style="background-color: rgb(30, 51, 51); border-color: #555555; color: lightgray; font-weight: 300; font-size: 95%;">
+				{{k}}: {{v}}
+			</span>
+		</div>
+	</div>
+</div>
+<br>
+
+<section class="card-section card-list-layout-list">
+	<h3 class="page-heading">Pods</h3>
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="pod in ctrl.daemonset.pods">
+            <div class="card-item card-item--alert pointer" ng-click="ctrl.goToWorkloadInfo('pod', pod, $event)">
+				<div class="card-item-header card-item-header-action">
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToPodDashboard(pod, $event)">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Pod dashboard'"></i>
+						<span class="muted">Pod Stats Dashboard</span>
+					</div>
+				</div>
+    			<div class="card-item-body">
+    				<div class="card-item-details">
+    					<div class="card-item-name">
+    						<span style="font-size: 80%;">{{pod.metadata.name}}</span>
+    					</div>
+    					<div class="card-item-sub-name">
+    						Status: {{pod.status.phase}}
+    					</div>
+    				</div>
+    			</div>
+			</div>
+		</li>
+	</ol>
+</section>

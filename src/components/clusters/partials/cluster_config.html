@@ -87,7 +87,8 @@
 <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
   <h5>Manual Deploy</h5>
   <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following files are needed.</p>
-  <button type="button" class="btn btn-success" ng-click="ctrl.saveKubeStateDeployToFile()">Download KubeState Deploy</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveTelegrafDeployToFile()">Download Telegraf Deploy</button>
   <button type="button" class="btn btn-success" ng-click="ctrl.saveTelegrafDSToFile()">Download Telegraf Daemon Set</button>
   <button type="button" class="btn btn-success" ng-click="ctrl.saveTelegrafConfigToFile()">Download Telegraf ConfigMap</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveTelegrafSecretToFile()">Download Telegraf Secret</button>
 </div>

@@ -125,7 +125,6 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         .search({
                         "var-datasource": this.cluster.jsonData.ds,
                         "var-cluster": this.cluster.name,
-                        "var-node": 'All',
                         "var-namespace": 'All',
                         "var-deployment": 'All'
                     });
@@ -135,17 +134,17 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         .search({
                         "var-datasource": this.cluster.jsonData.ds,
                         "var-cluster": this.cluster.name,
-                        "var-node": 'All',
-                        "var-namespace": 'All'
+                        "var-namespace": 'All',
+                        "var-statefulset": 'All'
                     });
                 };
-                ClusterInfoCtrl.prototype.goToJobsDashboard = function () {
-                    this.$location.path("dashboard/db/k8s-jobs")
+                ClusterInfoCtrl.prototype.goToDaemonSetsDashboard = function () {
+                    this.$location.path("dashboard/db/k8s-daemonset")
                         .search({
                         "var-datasource": this.cluster.jsonData.ds,
                         "var-cluster": this.cluster.name,
-                        "var-node": 'All',
-                        "var-namespace": 'All'
+                        "var-namespace": 'All',
+                        "var-daemonset": 'All'
                     });
                 };
                 ClusterInfoCtrl.prototype.goToPodDashboard = function () {

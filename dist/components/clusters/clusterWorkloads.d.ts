@@ -25,6 +25,7 @@ export declare class ClusterWorkloadsCtrl {
     isComponentHealthy(component: any): boolean;
     goToPodDashboard(pod: any): void;
     goToDeploymentDashboard(deploy: any): void;
+    goToDaemonSetsDashboard(daemonset: any): void;
     goToStatefulSetsDashboard(statefulset: any): void;
-    goToPodInfo(pod: any, evt: any): void;
+    goToWorkloadInfo(workloadType: any, workload: any, evt: any): void;
 }

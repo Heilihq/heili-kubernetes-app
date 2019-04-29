@@ -70,7 +70,6 @@ export class ClusterInfoCtrl {
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": 'All',
         "var-namespace": 'All',
         "var-deployment": 'All'
       });
@@ -81,18 +80,18 @@ export class ClusterInfoCtrl {
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": 'All',
-        "var-namespace": 'All'
+        "var-namespace": 'All',
+        "var-statefulset": 'All'
       });
   }
 
-  goToJobsDashboard() {
-    this.$location.path("dashboard/db/k8s-jobs")
+  goToDaemonSetsDashboard() {
+    this.$location.path("dashboard/db/k8s-daemonset")
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": 'All',
-        "var-namespace": 'All'
+        "var-namespace": 'All',
+        "var-daemonset": 'All'
       });
   }
 

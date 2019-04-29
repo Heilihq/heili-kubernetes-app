@@ -26,10 +26,11 @@ System.register(['moment'], function(exports_1) {
                     }
                     else {
                         this.cluster_id = $location.search().cluster;
-                        var pod_name = $location.search().pod;
+                        var pod_name = $location.search().workload;
                         this.loadDatasource(this.cluster_id).then(function () {
                             _this.clusterDS.getPod(pod_name).then(function (pod) {
                                 _this.pod = pod;
+                                console.log(_this.pod);
                                 _this.pageReady = true;
                             });
                         });
@@ -48,7 +49,8 @@ System.register(['moment'], function(exports_1) {
                 };
                 PodInfoCtrl.prototype.conditionStatus = function (condition) {
                     var status;
-                    if (condition.type === "Ready") {
+                    var types = ["PodScheduled", "Ready", "Initialized", "ContainersReady"];
+                    if (types.includes(condition.type)) {
                         status = condition.status === "True";
                     }
                     else {

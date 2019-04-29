@@ -108,15 +108,15 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         "var-deployment": deploy.metadata.name
                     });
                 };
-                // goToDaemonSetsDashboard(daemonset) {
-                //   this.$location.path("dashboard/db/k8s-daemonsets")
-                //   .search({
-                //     "var-datasource": this.cluster.jsonData.ds,
-                //     "var-cluster": this.cluster.name,
-                //     "var-namespace": daemonset.metadata.namespace,
-                //     "var-daemonset": daemonset.metadata.name
-                //   });
-                // }
+                ClusterWorkloadsCtrl.prototype.goToDaemonSetsDashboard = function (daemonset) {
+                    this.$location.path("dashboard/db/k8s-daemonset")
+                        .search({
+                        "var-datasource": this.cluster.jsonData.ds,
+                        "var-cluster": this.cluster.name,
+                        "var-namespace": daemonset.metadata.namespace,
+                        "var-daemonset": daemonset.metadata.name
+                    });
+                };
                 ClusterWorkloadsCtrl.prototype.goToStatefulSetsDashboard = function (statefulset) {
                     this.$location.path("dashboard/db/k8s-statefulset")
                         .search({
@@ -126,18 +126,18 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         "var-statefulset": statefulset.metadata.name
                     });
                 };
-                ClusterWorkloadsCtrl.prototype.goToPodInfo = function (pod, evt) {
+                ClusterWorkloadsCtrl.prototype.goToWorkloadInfo = function (workloadType, workload, evt) {
                     var clickTargetIsLinkOrHasLinkParents = jquery_1.default(evt.target).closest('a').length > 0;
                     var closestElm = lodash_1.default.head(jquery_1.default(evt.target).closest('div'));
                     var clickTargetClickAttr = lodash_1.default.find(closestElm.attributes, { name: "ng-click" });
                     var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
                     if (clickTargetIsLinkOrHasLinkParents === false &&
                         clickTargetIsNodeDashboard === false) {
-                        this.$location.path("plugins/heili-kubernetes-app/page/pod-info")
+                        this.$location.path("plugins/heili-kubernetes-app/page/" + workloadType + "-info")
                             .search({
                             "cluster": this.cluster.id,
-                            "namespace": pod.metadata.namespace,
-                            "pod": pod.metadata.name
+                            "namespace": workload.metadata.namespace,
+                            "workload": workload.metadata.name
                         });
                     }
                 };

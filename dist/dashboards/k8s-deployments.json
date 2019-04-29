@@ -60,111 +60,10 @@
       "colors": [
         "rgba(245, 54, 54, 0.9)",
         "rgba(237, 129, 40, 0.89)",
-        "rgb(72, 223, 30)"
-      ],
-      "datasource": "$datasource",
-      "editable": true,
-      "error": false,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 0,
-        "y": 0
-      },
-      "id": 24,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-            "bucketAggs": [
-              {
-                "field": "@timestamp",
-                "id": "2",
-                "settings": {
-                  "interval": "auto",
-                  "min_doc_count": 1,
-                  "trimEdges": 1
-                },
-                "type": "date_histogram"
-              }
-            ],
-            "metrics": [
-              {
-                "field": "fields.gauge",
-                "id": "1",
-                "meta": {},
-                "settings": {},
-                "type": "sum"
-              }
-            ],
-            "query": "name: kube_deployment_status_replicas && tags.namespace: $namespace && tags.host: $node && tags.deployment: $deployment",
-            "refId": "A",
-            "timeField": "@timestamp"
-          }
-        ],
-      "thresholds": "",
-      "title": "Deployment Replicas - Desired",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
       "datasource": "$datasource",
+      "description": "The number of available pods per deployment. \n*[kubernetes_deployment.replicas_available]*",
       "editable": true,
       "error": false,
       "format": "none",
@@ -232,14 +131,14 @@
             ],
             "metrics": [
               {
-                "field": "fields.gauge",
+                "field": "fields.replicas_available",
                 "id": "1",
                 "meta": {},
                 "settings": {},
                 "type": "sum"
               }
             ],
-            "query": "name: kube_deployment_status_replicas_available && tags.namespace: $namespace && tags.host: $node && tags.deployment: $deployment",
+            "query": "name: kubernetes_deployment && tags.namespace: $namespace && tags.deployment_name: $deployment",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -267,6 +166,7 @@
         "rgba(50, 172, 45, 0.97)"
       ],
       "datasource": "$datasource",
+      "description": "The number of unavailable pods per deployment.  \n*[kubernetes_deployment.replicas_unavailable]*",
       "editable": true,
       "error": false,
       "format": "none",
@@ -281,108 +181,6 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 0
-      },
-      "id": 25,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-            "bucketAggs": [
-              {
-                "field": "@timestamp",
-                "id": "2",
-                "settings": {
-                  "interval": "auto",
-                  "min_doc_count": 1,
-                  "trimEdges": 1
-                },
-                "type": "date_histogram"
-              }
-            ],
-            "metrics": [
-              {
-                "field": "fields.gauge",
-                "id": "1",
-                "meta": {},
-                "settings": {},
-                "type": "sum"
-              }
-            ],
-            "query": "name: kube_deployment_status_replicas_updated && tags.namespace: $namespace && tags.host: $node && tags.deployment: $deployment",
-            "refId": "A",
-            "timeField": "@timestamp"
-          }
-        ],
-      "thresholds": "",
-      "title": "Deployments Replicas - Up-to-date",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
-      ],
-      "datasource": "$datasource",
-      "editable": true,
-      "error": false,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 18,
         "y": 0
       },
       "id": 32,
@@ -436,14 +234,14 @@
             ],
             "metrics": [
               {
-                "field": "fields.gauge",
+                "field": "fields.replicas_unavailable",
                 "id": "1",
                 "meta": {},
                 "settings": {},
                 "type": "sum"
               }
             ],
-            "query": "name: kube_deployment_status_replicas_unavailable && tags.namespace: $namespace && tags.host: $node && tags.deployment: $deployment",
+            "query": "name: kubernetes_deployment && tags.namespace: $namespace && tags.deployment_name: $deployment",
             "refId": "A",
             "timeField": "@timestamp"
           }
@@ -467,6 +265,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "$datasource",
+      "description": "Ready Deployment replicas pod split.",
       "editable": true,
       "error": false,
       "fill": 1,
@@ -476,7 +275,7 @@
         "x": 0,
         "y": 5
       },
-      "id": 34,
+      "id": 36,
       "legend": {
         "alignAsTable": true,
         "avg": false,
@@ -504,11 +303,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "{{tags.deployment}}.{{tags.namespace}}",
+          "alias": "{{tags.deployment_name}}.{{tags.namespace}}",
           "bucketAggs": [
             {
               "fake": true,
-              "field": "tags.deployment",
+              "field": "tags.deployment_name",
               "id": "4",
               "settings": {
                 "min_doc_count": 1,
@@ -543,14 +342,14 @@
           ],
           "metrics": [
             {
-              "field": "fields.gauge",
+              "field": "fields.replicas_available",
               "id": "1",
               "meta": {},
               "settings": {},
               "type": "max"
             }
           ],
-          "query": "name: kube_deployment_status_replicas && tags.namespace: $namespace && tags.host: $node && tags.deployment: $deployment",
+          "query": "name: kubernetes_deployment && tags.namespace: $namespace && tags.deployment_name: $deployment",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -597,145 +396,10 @@
         "align": false,
         "alignLevel": null
       }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "$datasource",
-      "editable": true,
-      "error": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
-      "id": 35,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "connected",
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-            "alias": "{{tags.deployment}}.{{tags.namespace}}",
-            "bucketAggs": [
-              {
-                "fake": true,
-                "field": "tags.deployment",
-                "id": "4",
-                "settings": {
-                  "min_doc_count": 1,
-                  "order": "desc",
-                  "orderBy": "_term",
-                  "size": "0"
-                },
-                "type": "terms"
-              },
-              {
-                "fake": true,
-                "field": "tags.namespace",
-                "id": "3",
-                "settings": {
-                  "min_doc_count": 1,
-                  "order": "desc",
-                  "orderBy": "_term",
-                  "size": "0"
-                },
-                "type": "terms"
-              },
-              {
-                "field": "@timestamp",
-                "id": "2",
-                "settings": {
-                  "interval": "auto",
-                  "min_doc_count": 1,
-                  "trimEdges": 0
-                },
-                "type": "date_histogram"
-              }
-            ],
-            "metrics": [
-              {
-                "field": "fields.gauge",
-                "id": "1",
-                "meta": {},
-                "settings": {},
-                "type": "max"
-              }
-            ],
-            "query": "name: kube_deployment_status_observed_generation && tags.namespace: $namespace && tags.host: $node && tags.deployment: $deployment",
-            "refId": "A",
-            "timeField": "@timestamp"
-          }
-        ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Generations",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 16,
+  "refresh": "1m",
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [
     "kubernetes",
@@ -781,25 +445,6 @@
         "refresh": 1,
         "regex": "/$ds/",
         "type": "datasource"
-      },
-      {
-        "allValue": null,
-        "datasource": "$cluster",
-        "hide": 0,
-        "includeAll": true,
-        "label": null,
-        "multi": true,
-        "name": "node",
-        "options": [],
-        "query": "node",
-        "refresh": 1,
-        "regex": "",
-        "sort": 0,
-        "tagValuesQuery": null,
-        "tags": [],
-        "tagsQuery": null,
-        "type": "query",
-        "useTags": false
       },
       {
         "allValue": null,

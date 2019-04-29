@@ -23,8 +23,9 @@ export declare class ClusterConfigCtrl {
     reset(): void;
     save(): any;
     saveTelegrafConfigToFile(): void;
+    saveTelegrafSecretToFile(): void;
     saveTelegrafDSToFile(): void;
-    saveKubeStateDeployToFile(): void;
+    saveTelegrafDeployToFile(): void;
     saveToFile(filename: any, blob: any): void;
     saveDatasource(): any;
     cancel(): void;

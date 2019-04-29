@@ -76,20 +76,20 @@ System.register(['app/core/utils/kbn', 'lodash', 'moment'], function(exports_1) 
                     var _this = this;
                     var podsPerNode, cpuPerNode, memoryPerNode;
                     var podQuery = {
-                        expr: 'name: kube_pod_info',
-                        field: 'tags.pod',
+                        expr: 'name: kubernetes_pod_container',
+                        field: 'tags.pod_name',
                         type: 'cardinality',
-                        legend: 'tags.node',
+                        legend: 'tags.node_name',
                     };
                     var cpuQuery = {
-                        expr: 'name: kube_pod_container_resource_requests && tags.resource: cpu',
-                        field: 'fields.gauge',
+                        expr: 'name: kubernetes_pod_container',
+                        field: 'fields.resource_requests_cpu_units',
                         type: 'avg',
                         legend: 'tags.node',
                     };
                     var memoryQuery = {
-                        expr: 'name: kube_pod_container_resource_requests && tags.resource: memory',
-                        field: 'fields.gauge',
+                        expr: 'name: kubernetes_pod_container',
+                        field: 'fields.resource_requests_memory_bytes',
                         type: 'avg',
                         legend: 'tags.node',
                     };

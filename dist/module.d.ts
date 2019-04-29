@@ -5,4 +5,7 @@ import { ClusterInfoCtrl } from './components/clusters/clusterInfo';
 import { ClusterWorkloadsCtrl } from './components/clusters/clusterWorkloads';
 import { NodeInfoCtrl } from './components/clusters/nodeInfo';
 import { PodInfoCtrl } from './components/clusters/podInfo';
-export { KubernetesConfigCtrl as ConfigCtrl, ClustersCtrl, ClusterConfigCtrl, ClusterInfoCtrl, ClusterWorkloadsCtrl, NodeInfoCtrl, PodInfoCtrl };
+import { StatefulSetInfoCtrl } from './components/clusters/statefulSetInfo';
+import { DeploymentInfoCtrl } from './components/clusters/deploymentInfo';
+import { DaemonSetInfoCtrl } from './components/clusters/daemonSetInfo';
+export { KubernetesConfigCtrl as ConfigCtrl, ClustersCtrl, ClusterConfigCtrl, ClusterInfoCtrl, ClusterWorkloadsCtrl, NodeInfoCtrl, PodInfoCtrl, StatefulSetInfoCtrl, DeploymentInfoCtrl, DaemonSetInfoCtrl };
