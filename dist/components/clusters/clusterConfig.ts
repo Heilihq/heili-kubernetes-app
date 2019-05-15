@@ -396,12 +396,13 @@ export class ClusterConfigCtrl {
   pageReady: boolean;
   heiliDeployed: boolean;
   showHelp: boolean;
+  showDCHelp: boolean;
   datasources: [any];
 
   static templateUrl = 'components/clusters/partials/cluster_config.html';
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private $q, private contextSrv, private $location, private $window, private alertSrv) {
+  constructor($scope, $injector, private backendSrv, private $q, private contextSrv, private $location, private $window) {
     var self = this;
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     this.cluster = {
@@ -410,6 +411,7 @@ export class ClusterConfigCtrl {
     this.pageReady = false;
     this.heiliDeployed = false;
     this.showHelp = false;
+    this.showDCHelp = false;
     document.title = 'Heili Kubernetes App';
 
     if (this.cluster.jsonData === null) {
@@ -425,6 +427,14 @@ export class ClusterConfigCtrl {
 
   toggleHelp() {
     this.showHelp = !this.showHelp;
+  }
+
+  toggleDCHelp(dc) {
+    if (this.showDCHelp == dc){
+        this.showDCHelp = false;
+    } else {
+        this.showDCHelp = dc;
+    };
   }
 
   getDatasources() {
@@ -488,7 +498,7 @@ export class ClusterConfigCtrl {
   save() {
     if (!this.cluster.jsonData.apiKeySet &&
         (!this.cluster.jsonData.accessKey) || (!this.cluster.jsonData.secretKey)) {
-      this.alertSrv.set("Failed", "Access Key or Secret Key not set.", 'error', 5000);
+      appEvents.emit('alert-error', ['Failed', 'Access Key or Secret Key not set.']);
       return this.$q.reject("apiKeys not set.");
     }
     this.cluster.jsonData.apiKeySet = true;
@@ -498,10 +508,10 @@ export class ClusterConfigCtrl {
         return this.getDatasources();
       })
       .then(() => {
-        this.alertSrv.set("Saved", "Saved and successfully connected to " + this.cluster.name, 'success', 3000);
+        appEvents.emit('alert-success', ['Saved', 'Saved and successfully connected to ' + this.cluster.name]);
       })
       .catch(err => {
-        this.alertSrv.set("Saved", "Saved but failed to connect to " + this.cluster.name + '. Error: ' + err, 'error', 5000);
+        appEvents.emit('alert-error', ['Saved', 'aved but failed to connect to ' + this.cluster.name + '. Error: ' + err]);
       });
   }
 
@@ -582,11 +592,8 @@ export class ClusterConfigCtrl {
 
   saveDatasource() {
     if (this.cluster.id) {
-      console.log('bla');
-      console.log(this.cluster);
       return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster);
     } else {
-      console.log(this.cluster);
       return this.backendSrv.post('/api/datasources', this.cluster);
     }
   }

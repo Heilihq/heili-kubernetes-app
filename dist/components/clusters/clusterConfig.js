@@ -1,11 +1,14 @@
 ///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-System.register(['lodash', 'angular'], function(exports_1) {
-    var lodash_1, angular_1;
+System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1) {
+    var lodash_1, app_events_1, angular_1;
     var telegrafImage, telegrafDeployment, telegrafDaemonSet, telegrafRBAC, telegrafSecret, telegrafConfigMap, ClusterConfigCtrl;
     return {
         setters:[
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
+            },
+            function (app_events_1_1) {
+                app_events_1 = app_events_1_1;
             },
             function (angular_1_1) {
                 angular_1 = angular_1_1;
@@ -394,13 +397,12 @@ System.register(['lodash', 'angular'], function(exports_1) {
             };
             ClusterConfigCtrl = (function () {
                 /** @ngInject */
-                function ClusterConfigCtrl($scope, $injector, backendSrv, $q, contextSrv, $location, $window, alertSrv) {
+                function ClusterConfigCtrl($scope, $injector, backendSrv, $q, contextSrv, $location, $window) {
                     this.backendSrv = backendSrv;
                     this.$q = $q;
                     this.contextSrv = contextSrv;
                     this.$location = $location;
                     this.$window = $window;
-                    this.alertSrv = alertSrv;
                     var self = this;
                     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
                     this.cluster = {
@@ -409,6 +411,7 @@ System.register(['lodash', 'angular'], function(exports_1) {
                     this.pageReady = false;
                     this.heiliDeployed = false;
                     this.showHelp = false;
+                    this.showDCHelp = false;
                     document.title = 'Heili Kubernetes App';
                     if (this.cluster.jsonData === null) {
                         this.cluster.jsonData = {};
@@ -422,6 +425,15 @@ System.register(['lodash', 'angular'], function(exports_1) {
                 }
                 ClusterConfigCtrl.prototype.toggleHelp = function () {
                     this.showHelp = !this.showHelp;
+                };
+                ClusterConfigCtrl.prototype.toggleDCHelp = function (dc) {
+                    if (this.showDCHelp == dc) {
+                        this.showDCHelp = false;
+                    }
+                    else {
+                        this.showDCHelp = dc;
+                    }
+                    ;
                 };
                 ClusterConfigCtrl.prototype.getDatasources = function () {
                     var self = this;
@@ -478,7 +490,7 @@ System.register(['lodash', 'angular'], function(exports_1) {
                     var _this = this;
                     if (!this.cluster.jsonData.apiKeySet &&
                         (!this.cluster.jsonData.accessKey) || (!this.cluster.jsonData.secretKey)) {
-                        this.alertSrv.set("Failed", "Access Key or Secret Key not set.", 'error', 5000);
+                        app_events_1.default.emit('alert-error', ['Failed', 'Access Key or Secret Key not set.']);
                         return this.$q.reject("apiKeys not set.");
                     }
                     this.cluster.jsonData.apiKeySet = true;
@@ -487,10 +499,10 @@ System.register(['lodash', 'angular'], function(exports_1) {
                         return _this.getDatasources();
                     })
                         .then(function () {
-                        _this.alertSrv.set("Saved", "Saved and successfully connected to " + _this.cluster.name, 'success', 3000);
+                        app_events_1.default.emit('alert-success', ['Saved', 'Saved and successfully connected to ' + _this.cluster.name]);
                     })
                         .catch(function (err) {
-                        _this.alertSrv.set("Saved", "Saved but failed to connect to " + _this.cluster.name + '. Error: ' + err, 'error', 5000);
+                        app_events_1.default.emit('alert-error', ['Saved', 'aved but failed to connect to ' + _this.cluster.name + '. Error: ' + err]);
                     });
                 };
                 ClusterConfigCtrl.prototype.saveTelegrafConfigToFile = function () {
@@ -557,12 +569,9 @@ System.register(['lodash', 'angular'], function(exports_1) {
                 };
                 ClusterConfigCtrl.prototype.saveDatasource = function () {
                     if (this.cluster.id) {
-                        console.log('bla');
-                        console.log(this.cluster);
                         return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster);
                     }
                     else {
-                        console.log(this.cluster);
                         return this.backendSrv.post('/api/datasources', this.cluster);
                     }
                 };

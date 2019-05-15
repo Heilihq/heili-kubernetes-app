@@ -7,21 +7,33 @@
   <div class="gf-form-group">
     <div class="gf-form-inline">
       <div class="gf-form max-width-30">
-        <span class="gf-form-label width-10">Name</span>
+        <span class="gf-form-label width-10">
+            Name
+        </span>
         <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.name" placeholder="Cluster name" required=""
         />
       </div>
     </div>
     <div class="gf-form-inline">
       <div class="gf-form max-width-30">
-        <span class="gf-form-label width-10">Data Center</span>
+        <span class="gf-form-label width-10">
+            <info-popover mode="right-normal" class="gf-form-help-icon gf-form-help-icon--right-normal">
+                <i class="fa fa-info-circle"></i> Data Center name, used to identify cluster location. Common tags are "aws", "gcp", "azure" and etc.
+            </info-popover>
+            Data Center
+        </span>
         <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.dc" placeholder="Data Center" required=""
       />
       </div>
     </div>
     <div class="gf-form-inline">
       <div class="gf-form max-width-30">
-        <span class="gf-form-label width-10">Environment</span>
+        <span class="gf-form-label width-10">
+            <info-popover mode="right-normal" class="gf-form-help-icon gf-form-help-icon--right-normal">
+                <i class="fa fa-info-circle"></i> Cluster Environment name. Common names are "production", "test", "qa", "developement" ant etc.
+            </info-popover>
+            Environment
+        </span>
         <input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.env" placeholder="Cluster environment" required=""
       />
       </div>
@@ -35,20 +47,88 @@
     </div>
     <div class="gf-form-inline">
       <div class="gf-form max-width-30">
-        <span class="gf-form-label width-10">Heili Access Key</span>
+        <span class="gf-form-label width-10">
+            <info-popover mode="right-normal" class="gf-form-help-icon gf-form-help-icon--right-normal">
+                <i class="fa fa-info-circle"></i> Heili Access Key in order to send metrics from the cluster.
+            </info-popover>
+            Heili Access Key
+        </span>
        <input type="text" class="gf-form-input input-xlarge" ng-model="ctrl.cluster.jsonData.accessKey" ng-if="!ctrl.cluster.jsonData.apiKeySet" required>
        <input type="text" class="gf-form-input max-width-12" disabled="disabled" value="complete" ng-if="ctrl.cluster.jsonData.apiKeySet">
       </div>
     </div>
     <div class="gf-form-inline">
       <div class="gf-form max-width-30">
-        <span class="gf-form-label width-10">Heili Secret Key</span>
+        <span class="gf-form-label width-10">
+            <info-popover mode="right-normal" class="gf-form-help-icon gf-form-help-icon--right-normal">
+                <i class="fa fa-info-circle"></i> Heili Secret Key in order to send metrics from the cluster.
+            </info-popover>
+            Heili Secret Key
+        </span>
         <input type="password" class="gf-form-input input-xlarge" ng-model="ctrl.cluster.jsonData.secretKey" ng-if="!ctrl.cluster.jsonData.apiKeySet" required>
 		<input type="text" class="gf-form-input max-width-12" disabled="disabled" value="complete" ng-if="ctrl.cluster.jsonData.apiKeySet">
        </div>
 	   <div class="gf-form max-width-30">
 		<a class="btn btn-danger btn-small" href="#" ng-click="ctrl.reset()" ng-if="ctrl.cluster.jsonData.apiKeySet">reset</a>
 	   </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <h3 class="page-headering playlist-column-header">Cluster Connection</h3>
+    </div>
+  </div>
+  <!-- <div class="gf-form-group"> -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="gf-form-group">
+      <span class="dc-tab width-8" ng-class="{selected: ctrl.showDCHelp=='gke'}">
+        <a ng-click="ctrl.toggleDCHelp('gke')" bs-tooltip="'How to connect to GKE cluster'" data-placement="bottom">
+          <i class="fa fa-info-circle"></i> GKE
+        </a>
+      </span>
+      <span class="dc-tab width-8" ng-class="{selected: ctrl.showDCHelp=='rancher'}">
+        <a ng-click="ctrl.toggleDCHelp('rancher')" bs-tooltip="'How to connect to Rancher cluster'" data-placement="bottom">
+          <i class="fa fa-info-circle"></i> Rancher v2
+        </a>
+      </span>
+      <div class="grafana-info-box span10" ng-if="ctrl.showDCHelp=='gke'">
+        <h5>Google Kubernetes Engine</h5>
+        <p>All the relevant information can be found in <a href="https://console.cloud.google.com/kubernetes/list" target="_blank">Cluster Details</a> page of specific cluster.</p>
+        <p>GKE use <b>Basic Authentication</b> with <b>CA Certificate</b>, make sure to enable both ticks.
+        <ul>
+          <li><b>URL</b> - Google cluster Endpoint IP Address with 'https://' protocol - https://168.192.100.1</li>
+          <li><b>User</b> - Shown after pressing "Show Credentials"</li>
+          <li><b>Password</b> - Shown after pressing "Show Credentials"</li>
+          <li><b>CA Cert</b> - Shown after pressing "Show Credentials"</li>
+        </ul>
+      </div>
+      <div class="grafana-info-box span10" ng-if="ctrl.showDCHelp=='rancher'">
+        <h5>Rancher v2</h5>
+        <p>Authentication to Kubernetes under Rancher 2 is done via Rancher API Authentication with API Key (<a href="https://rancher.com/docs/rancher/v2.x/en/user-settings/api-keys/" target="_blank">Official Documentation</a>).</p>
+        <p>Create new API Key in Rancher Console:</p>
+        <ol>
+          <li>Select User Avatar > API & Keys from the User Settings menu in the upper-right</li>
+          <li>Click Add Key</li>
+          <li>Write API Key description, like - <i>Heili Access</i></li>
+          <li>Select specific Cluster under Scope</li>
+          <li>Click Create</li>
+          <li>Copy <b>Access Key</b> and <b>Secret Key</b></li>
+        </ol>
+        <p>Retrive API Endpoint URL:</p>
+        <ol>
+          <li>Select specific Cluster</li>
+          <li>Click on Kubeconfig file button</li>
+          <li>Copy URL under "<b>server</b>"</li>
+        </ol>
+        <p>Select <b>Basic Auth</b> tick and fill following information:</p>
+        <ul>
+          <li><b>URL</b> - API Endpoint URL from Kubeconfig file</li>
+          <li><b>User</b> - Rancher API Access Key</li>
+          <li><b>Password</b> - Rancher API Secret Key</li>
+        </ul>
+      </div>
+      </div>
     </div>
   </div>
   <datasource-http-settings current="ctrl.cluster" suggest-url="http://localhost:8001">
@@ -64,7 +144,12 @@
       <div class="gf-form-group">
         <div class="gf-form-inline">
           <div class="gf-form">
-            <span class="gf-form-label width-10">Datasource</span>
+            <span class="gf-form-label width-10">
+                <info-popover mode="right-normal" class="gf-form-help-icon gf-form-help-icon--right-normal">
+                    <i class="fa fa-info-circle"></i> Main Datasource that receive metrics from the cluster. Usualy named "heili".
+                </info-popover>
+                Datasource
+            </span>
             <select class="gf-form-input" ng-model="ctrl.cluster.jsonData.ds" ng-options="f.name as f.name for f in ctrl.datasources"
               required></select>
           </div>

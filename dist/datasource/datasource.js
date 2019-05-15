@@ -38,11 +38,11 @@ System.register(['lodash'], function(exports_1) {
                 }
                 K8sDatasource.prototype.testDatasource = function () {
                     return this.backendSrv.datasourceRequest({
-                        url: this.url + '/',
+                        url: this.url + '/version',
                         method: 'GET'
                     }).then(function (response) {
                         if (response.status === 200) {
-                            return { status: "success", message: "Data source is working", title: "Success" };
+                            return { status: "success", message: "Connected to Kubernetes API", title: "Success" };
                         }
                     });
                 };

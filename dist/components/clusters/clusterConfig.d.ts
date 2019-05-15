@@ -5,17 +5,18 @@ export declare class ClusterConfigCtrl {
     private contextSrv;
     private $location;
     private $window;
-    private alertSrv;
     cluster: any;
     isOrgEditor: boolean;
     pageReady: boolean;
     heiliDeployed: boolean;
     showHelp: boolean;
+    showDCHelp: boolean;
     datasources: [any];
     static templateUrl: string;
     /** @ngInject */
-    constructor($scope: any, $injector: any, backendSrv: any, $q: any, contextSrv: any, $location: any, $window: any, alertSrv: any);
+    constructor($scope: any, $injector: any, backendSrv: any, $q: any, contextSrv: any, $location: any, $window: any);
     toggleHelp(): void;
+    toggleDCHelp(dc: any): void;
     getDatasources(): any;
     getCluster(id: any): any;
     getHeiliDatasources(): any;
