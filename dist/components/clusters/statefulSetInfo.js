@@ -167,4 +167,4 @@ System.register(['moment', 'jquery', 'lodash'], function(exports_1) {
         }
     }
 });
-//# sourceMappingURL=statefulSetInfo.js.map
+//# sourceMappingURL=statefulsetInfo.js.map
