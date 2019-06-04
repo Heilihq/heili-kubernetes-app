@@ -29,6 +29,7 @@ let telegrafDeployment = {
         }
       },
       "spec": {
+        "serviceAccountName": "telegraf",
         "volumes": [{
           "name": "config",
             "configMap": {
@@ -109,7 +110,7 @@ let telegrafDaemonSet = {
     "selector": {
       "matchLabels": {
         "daemon": "telegraf",
-        "grafanak8sapp": "true"
+        "heilik8sapp": "true"
       }
     },
     "template": {
@@ -117,10 +118,11 @@ let telegrafDaemonSet = {
         "name": "telegraf",
         "labels": {
           "daemon": "telegraf",
-          "grafanak8sapp": "true"
+          "heilik8sapp": "true"
         }
       },
       "spec": {
+        "serviceAccountName": "telegraf",
         "volumes": [
           {
             "name": "proc",
@@ -218,11 +220,6 @@ let telegrafDaemonSet = {
               "mountPath": "/rootfs/proc"
             },
             {
-              "name": "docker",
-              "readOnly": true,
-              "mountPath": "/var/run/docker.sock"
-            },
-            {
               "name": "docker-socket",
               "readOnly": true,
               "mountPath": "/var/run/docker.sock"
@@ -257,11 +254,11 @@ const telegrafRBAC = [
       "rbac.authorization.k8s.io/aggregate-view-telegraf": "true"
     }
   },
-  "rules": [
-    {"apiGroups": [""]},
-    {"resources": ["persistentvolumes", "nodes"]},
-    {"verbs": ["get","list"]}
-  ]
+  "rules": [{
+    "apiGroups": [""],
+    "resources": ["persistentvolumes", "nodes"],
+    "verbs": ["get","list"]
+  }]
 },
 {
   "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -300,11 +297,11 @@ const telegrafRBAC = [
     "kind": "ClusterRole",
     "name": "heili:telegraf",
   },
-  "subjects": {
+  "subjects": [{
     "kind": "ServiceAccount",
     "name": "telegraf",
     "namespace": "heili"
-  }
+  }]
 }]
 
 const telegrafSecret = {
@@ -515,14 +512,22 @@ export class ClusterConfigCtrl {
       });
   }
 
+  saveTelegrafRbacToFile() {
+    let rbacRules = "";
+    telegrafRBAC.forEach(function(rule){
+      rbacRules += angular.toJson(rule, true);
+    });
+    let blob = new Blob([rbacRules], {
+      type: "application/json"
+    });
+    this.saveToFile('heilik8s-telegraf-rbac.json', blob);
+  }
+
   saveTelegrafConfigToFile() {
     let blob = new Blob([angular.toJson(telegrafConfigMap, true)], {
       type: "application/json"
     });
-    console.log(angular.toJson(telegrafConfigMap, true));
-    console.log(angular.toJson(telegrafConfigMap, 4));
-    console.log(blob);
-    this.saveToFile('heilik8s-telegraf-configmap.yml', blob);
+    this.saveToFile('heilik8s-telegraf-configmap.json', blob);
   }
 
   saveTelegrafSecretToFile() {

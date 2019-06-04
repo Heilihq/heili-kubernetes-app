@@ -38,6 +38,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                             }
                         },
                         "spec": {
+                            "serviceAccountName": "telegraf",
                             "volumes": [{
                                     "name": "config",
                                     "configMap": {
@@ -117,7 +118,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                     "selector": {
                         "matchLabels": {
                             "daemon": "telegraf",
-                            "grafanak8sapp": "true"
+                            "heilik8sapp": "true"
                         }
                     },
                     "template": {
@@ -125,10 +126,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                             "name": "telegraf",
                             "labels": {
                                 "daemon": "telegraf",
-                                "grafanak8sapp": "true"
+                                "heilik8sapp": "true"
                             }
                         },
                         "spec": {
+                            "serviceAccountName": "telegraf",
                             "volumes": [
                                 {
                                     "name": "proc",
@@ -226,11 +228,6 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                                             "mountPath": "/rootfs/proc"
                                         },
                                         {
-                                            "name": "docker",
-                                            "readOnly": true,
-                                            "mountPath": "/var/run/docker.sock"
-                                        },
-                                        {
                                             "name": "docker-socket",
                                             "readOnly": true,
                                             "mountPath": "/var/run/docker.sock"
@@ -265,11 +262,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                             "rbac.authorization.k8s.io/aggregate-view-telegraf": "true"
                         }
                     },
-                    "rules": [
-                        { "apiGroups": [""] },
-                        { "resources": ["persistentvolumes", "nodes"] },
-                        { "verbs": ["get", "list"] }
-                    ]
+                    "rules": [{
+                            "apiGroups": [""],
+                            "resources": ["persistentvolumes", "nodes"],
+                            "verbs": ["get", "list"]
+                        }]
                 },
                 {
                     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -308,11 +305,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                         "kind": "ClusterRole",
                         "name": "heili:telegraf",
                     },
-                    "subjects": {
-                        "kind": "ServiceAccount",
-                        "name": "telegraf",
-                        "namespace": "heili"
-                    }
+                    "subjects": [{
+                            "kind": "ServiceAccount",
+                            "name": "telegraf",
+                            "namespace": "heili"
+                        }]
                 }];
             telegrafSecret = {
                 "apiVersion": "v1",
@@ -505,14 +502,21 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                         app_events_1.default.emit('alert-error', ['Saved', 'aved but failed to connect to ' + _this.cluster.name + '. Error: ' + err]);
                     });
                 };
+                ClusterConfigCtrl.prototype.saveTelegrafRbacToFile = function () {
+                    var rbacRules = "";
+                    telegrafRBAC.forEach(function (rule) {
+                        rbacRules += angular_1.default.toJson(rule, true);
+                    });
+                    var blob = new Blob([rbacRules], {
+                        type: "application/json"
+                    });
+                    this.saveToFile('heilik8s-telegraf-rbac.json', blob);
+                };
                 ClusterConfigCtrl.prototype.saveTelegrafConfigToFile = function () {
                     var blob = new Blob([angular_1.default.toJson(telegrafConfigMap, true)], {
                         type: "application/json"
                     });
-                    console.log(angular_1.default.toJson(telegrafConfigMap, true));
-                    console.log(angular_1.default.toJson(telegrafConfigMap, 4));
-                    console.log(blob);
-                    this.saveToFile('heilik8s-telegraf-configmap.yml', blob);
+                    this.saveToFile('heilik8s-telegraf-configmap.json', blob);
                 };
                 ClusterConfigCtrl.prototype.saveTelegrafSecretToFile = function () {
                     var modifiedtelegrafSecret = telegrafSecret;
