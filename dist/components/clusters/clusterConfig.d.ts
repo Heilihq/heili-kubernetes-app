@@ -23,6 +23,7 @@ export declare class ClusterConfigCtrl {
     getDeployments(): any;
     reset(): void;
     save(): any;
+    saveTelegrafRbacToFile(): void;
     saveTelegrafConfigToFile(): void;
     saveTelegrafSecretToFile(): void;
     saveTelegrafDSToFile(): void;
